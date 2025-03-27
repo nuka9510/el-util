@@ -1,0 +1,644 @@
+import { JUtil } from "@nuka9510/js-util";
+import { SValidation } from "@nuka9510/simple-validation";
+import { action, actionCallback, ChildCloseEvent, ChildCloseEventOption, childWindow, NumberOnlyElement, submitMsg } from "../@types/common";
+import { config } from "@nuka9510/simple-validation/@types/validation";
+import { plugin } from "../@types/plugin";
+import Plugin from "./plugin";
+
+export default class Common {
+  #plugin: plugin[];
+
+  #childWindow?: childWindow;
+
+  #submitMsg: submitMsg = {
+    reg: '등록하시겠습니까?',
+    mod: '수정하시겠습니까?',
+    del: '삭제하시겠습니까?'
+  };
+
+  #_action: action;
+
+  get #action(): action {
+    return {
+      'get': [
+        { callback: this.#onGet }
+      ],
+      'post': [
+        { callback: this.#onPost }
+      ],
+      'sub-select': [
+        { event: 'change', callback: this.#onSubSelect }
+      ],
+      'check-all': [
+        { event: 'click', callback: this.#onCheckAll, option: { capture: true } }
+      ],
+      'prevent-default': [
+        { callback: this.#onPreventDefault }
+      ],
+      'stop-propagation': [
+        { callback: this.#onStopPropagation }
+      ],
+      'win-open': [
+        { event: 'click', callback: this.#onWinOpen }
+      ],
+      'win-close': [
+        { event: 'click', callback: this.#onWinClose }
+      ],
+      'number-only': [
+        { event: 'keydown', callback: this.#onNumberOnlyKeydown },
+        { event: 'input', callback: this.#onNumberOnlyInput },
+        { event: 'blur', callback: this.#onNumberOnlyBlur }
+      ],
+      'clipboard': [
+        { event: 'click', callback: this.#onClipboard }
+      ],
+      'check': [
+        { event: 'click', callback: this.#onCheck }
+      ]
+    };
+  }
+
+  #_windowAction: actionCallback[];
+
+  get #windowAction(): actionCallback[] {
+    return [
+      { event: 'child-close', callback: this.#onChildClose }
+    ];
+  }
+
+  form?: HTMLFormElement;
+
+  validation: SValidation;
+
+  get action(): action { return {}; }
+
+  get windowAction(): actionCallback[] { return []; }
+
+  constructor(
+    config: config
+  ) {
+    const addEvent = this.addEvent;
+
+    this.addEvent = () => {
+      addEvent();
+      this.#addEvent();
+    };
+
+    this.validation = new SValidation(config);
+    this.#plugin = Plugin.plugin.filter(
+      (...arg) => JUtil.empty(arg[0].target) ||
+                  arg[0].target.includes(this)
+    );
+
+    this.#_action = {
+      ...this.#action,
+      ...this.#plugin.reduce(
+        (...arg) => {
+          return {
+            ...arg[0],
+            ...arg[1].plugin.action
+          };
+        }, {}
+      ),
+      ...this.action
+    };
+
+    for (const action in this.#_action) {
+      this.#_action[action].forEach((...arg) => { arg[0].callback = arg[0].callback.bind(this); });
+    }
+
+    this.#windowAction.forEach((...arg) => {
+      this.#windowAction[arg[1]] = {
+        ...arg[0],
+        callback: arg[0].callback.bind(this)
+      };
+    });
+
+    this.addEvent();
+  }
+
+  addEvent(): void {}
+
+  #addEvent(): void {
+    for (const action in this.#_action) {
+      document.querySelectorAll<HTMLElement>(`[data-eu-action~="${action}"]`).forEach((...arg) => {
+        this.#_action[action].forEach((..._arg) => {
+          if (JUtil.empty(_arg[0].event)) {
+            arg[0].dataset['euEvent']?.split(' ').forEach((...__arg) => {
+              if (!JUtil.empty(__arg[0])) { arg[0].addEventListener(__arg[0], _arg[0].callback, _arg[0].option); }
+            });
+          } else { arg[0].addEventListener(_arg[0].event, _arg[0].callback, _arg[0].option); }
+        });
+      });
+    }
+
+    this.#windowAction.forEach((...arg) => { window.addEventListener(arg[0].event, arg[0].callback, arg[0].option); });
+  }
+
+  /**
+   * ```
+   * <button type="button" data-eu-action="bubble-stop"> 버튼 </button>
+   * ```
+   */
+  #onStopPropagation(
+    ev: Event
+  ): void { ev.stopPropagation(); }
+
+  /**
+   * ```
+   * <input type="radio" data-eu-action="prevent-default" data-eu-event="click">
+   * ```
+   * 
+   * ### attribute
+   * #### data-eu-event
+   * - 이벤트
+   * - separator: `' '`
+   */
+  #onPreventDefault(ev) { ev.preventDefault(); }
+
+  async onGetBefore(
+    ev: Event
+  ): Promise<boolean | void> {};
+
+  async onGetAfter(
+    ev: Event
+  ): Promise<void> {};
+
+  /**
+   * ```
+   * <button type="submit" data-eu-action="get" data-eu-url="[ string ]" data-eu-validation="[ 'Y' | 'N' ]"> submit </button>
+   * ```
+   * 
+   * ## attribute
+   * #### data-eu-url
+   * - link
+   * #### data-eu-validation - `optional`
+   * - validation check 구분
+   * - default: `'Y'`
+   */
+  async #onGet(
+    ev: Event
+  ): Promise<void> {
+    const node = ev.currentTarget as HTMLElement;
+
+    await this.onGetBefore(ev)
+              .then(async (result) => {
+                if (!JUtil.empty(this.form)) {
+                  this.validation.init();
+                    
+                  if (result ?? true) {
+                    if ((node.dataset['euValidation'] ?? 'Y') == 'Y') { this.validation.run(this.form as HTMLFormElement); }
+
+                    if (this.validation.result.flag) {
+                      (this.form as HTMLFormElement).action = node.dataset['euUrl'] as string;
+
+                      (this.form as HTMLFormElement).submit();
+                    } else {
+                      await this.onGetAfter(ev);
+                      alert(this.validation.result.alertMsg);
+                      this.validation.result.el?.focus();
+                    }
+                  }
+                } else {
+                  if (result ?? true) { location.href = node.dataset['euUrl'] as string; }
+                }
+              });
+  }
+
+  async onPostBefore(
+    ev: Event
+  ): Promise<boolean | void> {};
+
+  async onPostAfter(
+    ev: Event
+  ): Promise<void> {}
+
+  /**
+   * ```
+   * <button type="submit" data-eu-action="post" data-eu-url="[ string ]" data-eu-state="[ 'reg' | 'mod' | 'del' ]" data-eu-validation="[ 'Y' | 'N' ]" data-eu-msg="[ string ]"> submit </button>
+   * ```
+   * 
+   * ## attribute
+   * #### data-eu-url
+   * - link
+   * #### data-eu-state - `optional`
+   * - post type
+   * #### data-eu-validation - `optional`
+   * - validation check 구분
+   * - default:
+   * - - data-eu-state="del":
+   * - - - `'N'`
+   * - - otherwise:
+   * - - - `'Y'`
+   * #### data-eu-msg - `optional`
+   * - confirm msg
+   */
+  async #onPost(
+    ev: Event
+  ): Promise<void> {
+    const node = ev.currentTarget as HTMLElement;
+
+    await this.onPostBefore(ev)
+              .then(async (result) => {
+                let flag = true;
+
+                this.validation.init();
+                    
+                if (result ?? true) {
+                  if (
+                    JUtil.empty(node.dataset['euMsg'] || node.dataset['euState']) ||
+                    confirm(node.dataset['euMsg'] || this.#submitMsg[node.dataset['euState'] as string])
+                  ) {
+                    if ((node.dataset['euValidation'] ?? ((node.dataset['euState'] == 'del') ? 'N' : 'Y')) == 'Y') { this.validation.run(this.form as HTMLFormElement); }
+
+                    if (this.validation.result.flag) {
+                      (this.form as HTMLFormElement).action = `${ node.dataset['euUrl'] }${ location.search }`;
+
+                      (this.form as HTMLFormElement).submit();
+                    } else {
+                      await this.onPostAfter(ev);
+                      alert(this.validation.result.alertMsg);
+                      this.validation.result.el?.focus();
+                    }
+                  } else { flag = false; }
+                } else { flag = false; }
+
+                if (!flag) { await this.onPostAfter(ev); }
+              });
+  }
+
+  async onSubSelectAfter(
+    ev: Event
+  ): Promise<void> {}
+
+  /**
+   * ```
+   * <select data-eu-action="sub-select" data-eu-target="[ string ]">
+   *    <option value="a">A</option>
+   *    <option value="b">B</option>
+   * </select>
+   * <select data-eu-name="[ string ]">
+   *    <option style="display: none" data-eu-main="[ string ]" value="1">1</option>
+   *    <option style="display: none" data-eu-main="[ string ]" value="2">2</option>
+   *    <option style="display: none" data-eu-main="[ string ]" value="3">3</option>
+   *    <option style="display: none" data-eu-main="[ string ]" value="4">4</option>
+   *    <option style="display: none" data-eu-main="[ string ]" value="5">5</option>
+   *    <option style="display: none" data-eu-main="[ string ]" value="6">6</option>
+   * </select>
+   * ```
+   * 
+   * ### attribute
+   * #### data-eu-target
+   * - target `data-eu-name`
+   * #### data-eu-name
+   * #### data-eu-main
+   * - main `optionElement` `value`
+   */
+  #onSubSelect(
+    ev: Event
+  ): void {
+    const node = ev.currentTarget as HTMLSelectElement,
+    subNode = document.querySelectorAll<HTMLSelectElement>(`select[data-eu-name="${ node.dataset['euTarget'] }"]`);
+
+    subNode.forEach(async (...arg) => {
+      arg[0].querySelectorAll('option').forEach((..._arg) => {
+        if (!JUtil.empty(_arg[0].value)) { _arg[0].style.setProperty('display', ((node.value == _arg[0].dataset[node.dataset['euId'] as string]) || (node.value == _arg[0].dataset['euMain'])) ? 'block' : 'none'); }
+      });
+
+      arg[0].value = '';
+
+      await this.onSubSelectAfter(ev);
+
+      arg[0].dispatchEvent(new Event('change'));
+    });
+  }
+
+  async onCheckAllAfter(
+    ev: MouseEvent
+  ): Promise<void> {}
+
+  /**
+   * ```
+   * <input type="checkbox" data-eu-action="check-all" data-eu-target="[ string ]">
+   * <input type="checkbox" data-eu-name="[ string ]">
+   * <input type="checkbox" data-eu-name="[ string ]">
+   * ```
+   * 
+   * ### attribute
+   * #### data-eu-target
+   * - target `data-eu-name`
+   * #### data-eu-name
+   */
+  async #onCheckAll(
+    ev: MouseEvent
+  ): Promise<void> {
+    const node = ev.currentTarget as HTMLInputElement;
+
+    document.querySelectorAll<HTMLInputElement>(`input[type="checkbox"][data-eu-name='${node.dataset['euTarget']}']`).forEach((...arg) => { arg[0].checked = node.checked; });
+
+    await this.onCheckAllAfter(ev);
+  }
+
+  /**
+   * ```
+   * <button type="button" data-eu-action="win-open" data-eu-option="[ string ]" data-eu-url="[ string ]"> 버튼 </button>
+   * <script type="application/json" data-eu-name="win-open" data-eu-id="[ string ]">
+   *   {"name": "[window-name]", "pos": "center", "width": 1700, "height": 800, "scrollbars": "yes", "resizable": "yes"}
+   * </script>
+   * ```
+   * 
+   * ### attribute
+   * #### data-eu-option
+   * - target `data-eu-id`
+   * #### data-eu-url
+   * - link
+   * #### data-eu-id
+   */
+  #onWinOpen(
+    ev: Event
+  ): void {
+    const node = ev.currentTarget as HTMLElement;
+
+    if (!JUtil.empty(node.dataset['euOption'])) {
+      const url = node.dataset['euUrl'],
+      option = JSON.parse(document.querySelector<HTMLScriptElement>(`script[data-eu-name="_win_open"][data-eu-id="${ node.dataset['euOption'] }"]`)?.innerText ?? '{}');
+
+      let optiontext = '';
+
+      switch (option?.pos) {
+        case 'center':
+          option.top = ( screen.height - option.height ) / 2;
+          option.left = ( screen.width - option.width ) / 2;
+          break;
+      }
+
+      for (const key in option) {
+        if (!['name', 'pos'].includes(key)) {
+          if (!JUtil.empty(optiontext)) { optiontext += ', ' }
+
+          optiontext += `${ key }=${ option[key] }`
+        }
+      }
+
+      if (JUtil.empty(option.name)) {
+        window.open(url, undefined, optiontext);
+      } else {
+        const childWindow = window.open(url, option.name, optiontext);
+
+        this.#childWindow = JUtil.empty(this.#childWindow)
+          ? { [option.name]: childWindow }
+          : {
+            ...this.#childWindow,
+            [option.name]: childWindow
+          };
+      }
+    }
+  }
+
+  #onWinClose(
+    ev: MouseEvent
+  ): void { window.close(); }
+
+  #onNumberOnlyKeydown(
+    ev: KeyboardEvent
+  ): void {
+    const node = ev.currentTarget as NumberOnlyElement;
+
+    /** 한글 입력시 input 이벤트가 여러번 발생하는 현상 보정을 위한 로직 */
+    if (ev.keyCode == 229) {
+      node.event_key_code = ev.keyCode;
+      node.prev_value = node.value;
+      node.prev_selection = node.selectionStart as number;
+    } else {
+      delete node.event_key_code;
+      delete node.prev_value;
+      delete node.prev_selection;
+    }
+  }
+
+  #onNumberOnlyInput(
+    ev: InputEvent
+  ): void {
+    const node = ev.currentTarget as NumberOnlyElement;
+
+    /** 한글 입력시 input 이벤트가 여러번 발생하는 현상 보정을 위한 로직 */
+    if (node.event_key_code == 229) {
+      if (!ev.isComposing) {
+        node.value = node.prev_value as string;
+        node.selectionStart = node.prev_selection as number;
+      } else {
+        delete node.event_key_code;
+        delete node.prev_value;
+        delete node.prev_selection;
+      }
+    }
+
+    if (ev.data != null) {
+      const regex = {
+        A: /[\d]/,
+        B: /[\d\.\-]/,
+        C: /[\d\.]/
+      };
+
+      if (
+        !regex[node.dataset['euType'] ?? 'A'].test(ev.data) &&
+        !JUtil.empty(node.selectionStart)
+      ) { (node.selectionStart as number) -= 1; }
+    }
+
+    this.#onNumberOnly(ev);
+  }
+
+  #onNumberOnlyBlur(
+    ev: FocusEvent
+  ): void { this.#onNumberOnly(ev); }
+
+  /**
+   * ```
+   * <input type="text" data-eu-action="number-only" data-eu-type="[ 'A' | 'B' | 'C' ]" data-eu-min="[ number ]" data-eu-max="[ number ]" data-eu-decimal="[ number ]">
+   * ```
+   * 
+   * ### attribute
+   * #### data-eu-type="[ 'A' | 'B' | 'C' ]"
+   * - `A`: 숫자만 허용
+   * - `B`: 소숫점 및 음수 허용
+   * - `C`: #,###.# 형식으로 변환
+   * #### data-eu-min - `optional`
+   * - 최소값
+   * #### data-eu-max - `optional`
+   * - 최대값
+   * #### data-eu-decimal - `optional`
+   * - 소숫점 아래 자리 수
+   * - #defalut: `0`
+   */
+  #onNumberOnly(
+    ev: Event
+  ): void {
+    const node = ev.currentTarget as NumberOnlyElement,
+    type = node.dataset['euType'] ?? 'A',
+    min = node.dataset['euMin'],
+    max = node.dataset['euMax'],
+    regex = {
+      A: /[^\d]/g,
+      B: /[^\d\.\-]/g,
+      C: /[^\d]/g
+    };
+
+    let selection = node.selectionStart as number,
+    decimal: string | undefined;
+
+    if (type == 'C') {
+      const value = node.value.split('.');
+
+      selection = (node.selectionStart as number) - [...node.value.matchAll(/,/g)].length;
+
+      node.value = value[0];
+
+      decimal = value.filter((el, i, arr) => i > 0).join('').substring(0, parseInt(node.dataset['euDecimal'] ?? '0'));
+      decimal = `${ !JUtil.empty(decimal) ? '.' : '' }${ decimal }`;
+    }
+
+    node.value = node.value.replace(regex[type], '');
+
+    if (type == 'C') {
+      if (
+        !JUtil.empty(node.value) ||
+        !JUtil.empty(decimal)
+      ) {
+        const num = parseInt(node.value || '0');
+
+        node.value = `${ JUtil.numberFormat(num) }${ decimal }`;
+
+        selection += [...node.value.matchAll(/,/g)].length;
+      }
+    }
+
+    if (
+      JUtil.isNumber(min) ||
+      JUtil.isNumber(max)
+    ) {
+      let flag = false,
+      /** @type {number} */
+      value,
+      /** @type {number} */
+      num;
+
+      if (type == 'C') {
+        value = Number(node.value.replace(/,/g, ''));
+      } else { value = Number(node.value); }
+
+      if (
+        !flag &&
+        JUtil.isNumber(min)
+      ) {
+        if (
+          JUtil.empty(node.value) ||
+          value < Number(min)
+        ) {
+          num = Number(min);
+
+          flag = true;
+        }
+      }
+
+      if (
+        !flag &&
+        JUtil.isNumber(max) &&
+        value > Number(max)
+      ) {
+        num = Number(max);
+
+        flag = true;
+      }
+
+      if (flag) {
+        /** @type {string} */
+        let _value;
+
+        if (type == 'C') {
+          _value = JUtil.numberFormat(num, parseInt(node.dataset['euDecimal'] ?? '0'));
+        } else { _value = `${ num }`; }
+
+        selection -= node.value.length - _value.length;
+        node.value = _value;
+      }
+    }
+
+    if (!JUtil.empty(node.selectionEnd)) { node.selectionEnd = selection; }
+  }
+
+  /**
+   * ```
+   * <button type="button" data-eu-action="clipboard" data-eu-value="[ string ]">복사</button>
+   * ```
+   * 
+   * ### attribute
+   * #### data-eu-value
+   * - 복사할 문자열
+   */
+  async #onClipboard(
+    ev: Event
+  ): Promise<void> {
+    const node = ev.currentTarget as HTMLElement;
+
+    await navigator.clipboard
+                    .writeText(node.dataset['euValue'] as string)
+                    .then((value) => { alert('링크가 클립보드에 저장되었습니다.'); })
+                    .catch((e) => { console.error(e); });
+  }
+
+  async onCheckAfter(
+    ev: MouseEvent
+  ): Promise<void> {}
+
+  /**
+   * ```
+   * <input type="checkbox" data-eu-action="check" data-eu-target="[ string ]">
+   * <input type="hidden" value="[ string ]" data-eu-name="[ string ]" data-eu-true="[ string ]" data-eu-false="[ string ]">
+   * ```
+   * 
+   * ### attribute
+   * #### data-eu-target
+   * - target `data-eu-name`
+   * #### data-eu-name
+   * #### data-eu-true
+   * - `true` 일 경우 `value`
+   * #### data-eu-false
+   * - `false` 일 경우 `value`
+   */
+  async #onCheck(
+    ev: MouseEvent
+  ): Promise<void> {
+    const node = ev.currentTarget as HTMLInputElement,
+    target = document.querySelector<HTMLInputElement>(`input[data-eu-name="${ node.dataset['euTarget'] }"]`) as HTMLInputElement;
+
+    target.value = (node.checked ? target.dataset['euTrue'] : target.dataset['euFalse']) as string;
+
+    await this.onCheckAfter(ev);
+  }
+
+  childCloseEvent(
+    opt: ChildCloseEventOption
+  ): ChildCloseEvent { return new CustomEvent('child-close', opt); }
+
+  async onChildCloseAfter(
+    ev: ChildCloseEvent
+  ): Promise<void> {};
+
+  /**
+   * ```
+   * <script>
+   *   opener.dispatchEvent(new CustomEvent('child-close'));
+   *   window.close();
+   * </script>
+   * ```
+   */
+  async #onChildClose(
+    ev: ChildCloseEvent
+  ): Promise<void> {
+    await this.onChildCloseAfter(ev);
+
+    if (ev.detail.reload ?? true) { location.reload(); }
+  }
+
+}

@@ -1,0 +1,30 @@
+{
+  "name": "@nuka9510/el-util",
+  "version": "1.0.0",
+  "description": "nuka9510's javascript element object util for web front-end",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nuka9510/el-util.git"
+  },
+  "keywords": [
+    "web",
+    "module",
+    "front-end",
+    "util",
+    "element"
+  ],
+  "author": "nuka9510",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nuka9510/el-util/issues"
+  },
+  "homepage": "https://github.com/nuka9510/el-util",
+  "dependencies": {
+    "@nuka9510/js-util": "^1.0.23",
+    "@nuka9510/simple-validation": "^1.0.6"
+  }
+}
