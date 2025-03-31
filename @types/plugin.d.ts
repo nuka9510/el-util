@@ -1,4 +1,4 @@
-import Common from "../src/common";
+import Common from "../src/common.js";
 import { action, actionCallback } from "./common";
 
 export = plugin;
