@@ -20,6 +20,12 @@ export default class Common {
 
   get #action(): action {
     return {
+      'prevent-default': [
+        { callback: this.#onPreventDefault }
+      ],
+      'stop-propagation': [
+        { callback: this.#onStopPropagation }
+      ],
       'get': [
         { callback: this.#onGet }
       ],
@@ -31,12 +37,6 @@ export default class Common {
       ],
       'check-all': [
         { event: 'click', callback: this.#onCheckAll, option: { capture: true } }
-      ],
-      'prevent-default': [
-        { callback: this.#onPreventDefault }
-      ],
-      'stop-propagation': [
-        { callback: this.#onStopPropagation }
       ],
       'win-open': [
         { event: 'click', callback: this.#onWinOpen }
@@ -74,6 +74,37 @@ export default class Common {
 
   get windowAction(): actionCallback[] { return []; }
 
+  /**
+   * ``` 
+   * <button type="button" data-eu-action="test-click">test-click</button>
+   * <script type="importmap">
+   *   {
+   *     "imports": {
+   *       "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util/dist/index.js",
+   *       "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/index.js"
+   *     }
+   *   }
+   * </script>
+   * <script type="module">
+   *   import { EUCommon } from "@nuka9510/el-util";
+   * 
+   *   class Index extends EUCommon {
+   *     get action() {
+   *       return {
+   *         'test-click': [
+   *           { event: 'click', callback: this.onTestClick }
+   *         ]
+   *       };
+   *     }
+   * 
+   *     onTestClick(ev) { alert('test'); }
+   * 
+   *   }
+   * 
+   *   new Index();
+   * </script>
+   * ``` 
+   */
   constructor(
     config: config
   ) {
@@ -120,8 +151,8 @@ export default class Common {
       this.#_action[action].forEach((...arg) => { arg[0].callback = arg[0].callback.bind(this); });
     }
 
-    this.#windowAction.forEach((...arg) => {
-      this.#windowAction[arg[1]] = {
+    this.#_windowAction.forEach((...arg) => {
+      this.#_windowAction[arg[1]] = {
         ...arg[0],
         callback: arg[0].callback.bind(this)
       };
@@ -145,21 +176,12 @@ export default class Common {
       });
     }
 
-    this.#windowAction.forEach((...arg) => { window.addEventListener(arg[0].event, arg[0].callback, arg[0].option); });
+    this.#_windowAction.forEach((...arg) => { window.addEventListener(arg[0].event, arg[0].callback, arg[0].option); });
   }
 
   /**
    * ```
-   * <button type="button" data-eu-action="bubble-stop"> 버튼 </button>
-   * ```
-   */
-  #onStopPropagation(
-    ev: Event
-  ): void { ev.stopPropagation(); }
-
-  /**
-   * ```
-   * <input type="radio" data-eu-action="prevent-default" data-eu-event="click">
+   * <input type="radio" data-eu-action="prevent-default" data-eu-event="[ string ]">
    * ```
    * 
    * ### attribute
@@ -167,7 +189,23 @@ export default class Common {
    * - 이벤트
    * - separator: `' '`
    */
-  #onPreventDefault(ev) { ev.preventDefault(); }
+  #onPreventDefault(
+    ev: Event
+  ): void { ev.preventDefault(); }
+
+  /**
+   * ```
+   * <button type="button" data-eu-action="stop-propagation" data-eu-event="[ string ]"> 버튼 </button>
+   * ```
+   * 
+   * ### attribute
+   * #### data-eu-event
+   * - 이벤트
+   * - separator: `' '`
+   */
+  #onStopPropagation(
+    ev: Event
+  ): void { ev.stopPropagation(); }
 
   async onGetBefore(
     ev: Event
@@ -179,7 +217,7 @@ export default class Common {
 
   /**
    * ```
-   * <button type="submit" data-eu-action="get" data-eu-url="[ string ]" data-eu-validation="[ 'Y' | 'N' ]"> submit </button>
+   * <button type="submit" data-eu-action="get" data-eu-url="[ string ]" data-eu-validation="[ 'Y' | 'N' ]" data-eu-event="[ string ]"> submit </button>
    * ```
    * 
    * ## attribute
@@ -188,6 +226,9 @@ export default class Common {
    * #### data-eu-validation - `optional`
    * - validation check 구분
    * - default: `'Y'`
+   * #### data-eu-event
+   * - 이벤트
+   * - separator: `' '`
    */
   async #onGet(
     ev: Event
@@ -195,27 +236,27 @@ export default class Common {
     const node = ev.currentTarget as HTMLElement;
 
     await this.onGetBefore(ev)
-              .then(async (result) => {
-                if (!JUtil.empty(this.form)) {
-                  this.validation.init();
-                    
-                  if (result ?? true) {
-                    if ((node.dataset['euValidation'] ?? 'Y') == 'Y') { this.validation.run(this.form as HTMLFormElement); }
+      .then(async (result) => {
+        if (!JUtil.empty(this.form)) {
+          this.validation.init();
+            
+          if (result ?? true) {
+            if ((node.dataset['euValidation'] ?? 'Y') == 'Y') { this.validation.run(this.form as HTMLFormElement); }
 
-                    if (this.validation.result.flag) {
-                      (this.form as HTMLFormElement).action = node.dataset['euUrl'] as string;
+            if (this.validation.result.flag) {
+              (this.form as HTMLFormElement).action = node.dataset['euUrl'] as string;
 
-                      (this.form as HTMLFormElement).submit();
-                    } else {
-                      await this.onGetAfter(ev);
-                      alert(this.validation.result.alertMsg);
-                      this.validation.result.el?.focus();
-                    }
-                  }
-                } else {
-                  if (result ?? true) { location.href = node.dataset['euUrl'] as string; }
-                }
-              });
+              (this.form as HTMLFormElement).submit();
+            } else {
+              await this.onGetAfter(ev);
+              alert(this.validation.result.alertMsg);
+              this.validation.result.el?.focus();
+            }
+          }
+        } else {
+          if (result ?? true) { location.href = node.dataset['euUrl'] as string; }
+        }
+      });
   }
 
   async onPostBefore(
@@ -228,7 +269,7 @@ export default class Common {
 
   /**
    * ```
-   * <button type="submit" data-eu-action="post" data-eu-url="[ string ]" data-eu-state="[ 'reg' | 'mod' | 'del' ]" data-eu-validation="[ 'Y' | 'N' ]" data-eu-msg="[ string ]"> submit </button>
+   * <button type="submit" data-eu-action="post" data-eu-url="[ string ]" data-eu-state="[ 'reg' | 'mod' | 'del' ]" data-eu-validation="[ 'Y' | 'N' ]" data-eu-msg="[ string ]" data-eu-event="[ string ]"> submit </button>
    * ```
    * 
    * ## attribute
@@ -245,6 +286,9 @@ export default class Common {
    * - - - `'Y'`
    * #### data-eu-msg - `optional`
    * - confirm msg
+   * #### data-eu-event
+   * - 이벤트
+   * - separator: `' '`
    */
   async #onPost(
     ev: Event
@@ -252,32 +296,32 @@ export default class Common {
     const node = ev.currentTarget as HTMLElement;
 
     await this.onPostBefore(ev)
-              .then(async (result) => {
-                let flag = true;
+      .then(async (result) => {
+        let flag = true;
 
-                this.validation.init();
-                    
-                if (result ?? true) {
-                  if (
-                    JUtil.empty(node.dataset['euMsg'] || node.dataset['euState']) ||
-                    confirm(node.dataset['euMsg'] || this.#submitMsg[node.dataset['euState'] as string])
-                  ) {
-                    if ((node.dataset['euValidation'] ?? ((node.dataset['euState'] == 'del') ? 'N' : 'Y')) == 'Y') { this.validation.run(this.form as HTMLFormElement); }
+        this.validation.init();
+            
+        if (result ?? true) {
+          if (
+            JUtil.empty(node.dataset['euMsg'] || node.dataset['euState']) ||
+            confirm(node.dataset['euMsg'] || this.#submitMsg[node.dataset['euState'] as string])
+          ) {
+            if ((node.dataset['euValidation'] ?? ((node.dataset['euState'] == 'del') ? 'N' : 'Y')) == 'Y') { this.validation.run(this.form as HTMLFormElement); }
 
-                    if (this.validation.result.flag) {
-                      (this.form as HTMLFormElement).action = `${ node.dataset['euUrl'] }${ location.search }`;
+            if (this.validation.result.flag) {
+              (this.form as HTMLFormElement).action = `${ node.dataset['euUrl'] }${ location.search }`;
 
-                      (this.form as HTMLFormElement).submit();
-                    } else {
-                      await this.onPostAfter(ev);
-                      alert(this.validation.result.alertMsg);
-                      this.validation.result.el?.focus();
-                    }
-                  } else { flag = false; }
-                } else { flag = false; }
+              (this.form as HTMLFormElement).submit();
+            } else {
+              await this.onPostAfter(ev);
+              alert(this.validation.result.alertMsg);
+              this.validation.result.el?.focus();
+            }
+          } else { flag = false; }
+        } else { flag = false; }
 
-                if (!flag) { await this.onPostAfter(ev); }
-              });
+        if (!flag) { await this.onPostAfter(ev); }
+      });
   }
 
   async onSubSelectAfter(
@@ -315,7 +359,7 @@ export default class Common {
 
     subNode.forEach(async (...arg) => {
       arg[0].querySelectorAll('option').forEach((..._arg) => {
-        if (!JUtil.empty(_arg[0].value)) { _arg[0].style.setProperty('display', ((node.value == _arg[0].dataset[node.dataset['euId'] as string]) || (node.value == _arg[0].dataset['euMain'])) ? 'block' : 'none'); }
+        if (!JUtil.empty(_arg[0].value)) { _arg[0].style.setProperty('display', (node.value == _arg[0].dataset['euMain']) ? 'block' : 'none'); }
       });
 
       arg[0].value = '';
@@ -408,6 +452,11 @@ export default class Common {
     }
   }
 
+  /**
+   * ```
+   * <button type="button" data-eu-action="win-close"> 버튼 </button>
+   * ```
+   */
   #onWinClose(
     ev: MouseEvent
   ): void { window.close(); }
@@ -421,7 +470,7 @@ export default class Common {
     if (ev.keyCode == 229) {
       node.event_key_code = ev.keyCode;
       node.prev_value = node.value;
-      node.prev_selection = node.selectionStart as number;
+      node.prev_selection = node.selectionStart;
     } else {
       delete node.event_key_code;
       delete node.prev_value;
@@ -437,8 +486,8 @@ export default class Common {
     /** 한글 입력시 input 이벤트가 여러번 발생하는 현상 보정을 위한 로직 */
     if (node.event_key_code == 229) {
       if (!ev.isComposing) {
-        node.value = node.prev_value as string;
-        node.selectionStart = node.prev_selection as number;
+        node.value = node.prev_value;
+        node.selectionStart = node.prev_selection;
       } else {
         delete node.event_key_code;
         delete node.prev_value;
@@ -472,7 +521,7 @@ export default class Common {
    * ```
    * 
    * ### attribute
-   * #### data-eu-type="[ 'A' | 'B' | 'C' ]"
+   * #### data-eu-type
    * - `A`: 숫자만 허용
    * - `B`: 소숫점 및 음수 허용
    * - `C`: #,###.# 형식으로 변환
@@ -497,13 +546,13 @@ export default class Common {
       C: /[^\d]/g
     };
 
-    let selection = node.selectionStart as number,
+    let selection = node.selectionStart,
     decimal: string | undefined;
 
     if (type == 'C') {
       const value = node.value.split('.');
 
-      selection = (node.selectionStart as number) - [...node.value.matchAll(/,/g)].length;
+      selection = node.selectionStart - [...node.value.matchAll(/,/g)].length;
 
       node.value = value[0];
 
@@ -531,10 +580,8 @@ export default class Common {
       JUtil.isNumber(max)
     ) {
       let flag = false,
-      /** @type {number} */
-      value,
-      /** @type {number} */
-      num;
+      value: number,
+      num: number;
 
       if (type == 'C') {
         value = Number(node.value.replace(/,/g, ''));
@@ -565,8 +612,7 @@ export default class Common {
       }
 
       if (flag) {
-        /** @type {string} */
-        let _value;
+        let _value: string;
 
         if (type == 'C') {
           _value = JUtil.numberFormat(num, parseInt(node.dataset['euDecimal'] ?? '0'));
@@ -595,9 +641,9 @@ export default class Common {
     const node = ev.currentTarget as HTMLElement;
 
     await navigator.clipboard
-                    .writeText(node.dataset['euValue'] as string)
-                    .then((value) => { alert('링크가 클립보드에 저장되었습니다.'); })
-                    .catch((e) => { console.error(e); });
+      .writeText(node.dataset['euValue'])
+      .then((value) => { alert('링크가 클립보드에 저장되었습니다.'); })
+      .catch((e) => { console.error(e); });
   }
 
   async onCheckAfter(
@@ -623,9 +669,9 @@ export default class Common {
     ev: MouseEvent
   ): Promise<void> {
     const node = ev.currentTarget as HTMLInputElement,
-    target = document.querySelector<HTMLInputElement>(`input[data-eu-name="${ node.dataset['euTarget'] }"]`) as HTMLInputElement;
+    target = document.querySelector<HTMLInputElement>(`input[data-eu-name="${ node.dataset['euTarget'] }"]`);
 
-    target.value = (node.checked ? target.dataset['euTrue'] : target.dataset['euFalse']) as string;
+    target.value = node.checked ? target.dataset['euTrue'] : target.dataset['euFalse'];
 
     await this.onCheckAfter(ev);
   }

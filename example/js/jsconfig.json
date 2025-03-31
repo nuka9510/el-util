@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "checkJs": false,
+    "strictNullChecks": false,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "moduleResolution": "node",
+    "useDefineForClassFields": true,
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "target": "ESNext",
+    "paths": {
+      "@nuka9510/js-util": [ "../../node_modules/@nuka9510/js-util/dist/index.js" ],
+      "@nuka9510/el-util": [ "../../dist/index.js" ]
+    }
+  }
+}
