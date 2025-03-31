@@ -1,6 +1,6 @@
 import { SValidation } from "@nuka9510/simple-validation";
-import { action, actionCallback, ChildCloseEvent, ChildCloseEventOption } from "../@types/common";
-import { config } from "@nuka9510/simple-validation/@types/validation";
+import { action, actionCallback, ChildCloseEvent, ChildCloseEventOption } from "../@types/common.js";
+import { config } from "@nuka9510/simple-validation/@types/validation.js";
 export default class Common {
     #private;
     form?: HTMLFormElement;

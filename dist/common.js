@@ -1,6 +1,6 @@
 import { JUtil } from "@nuka9510/js-util";
 import { SValidation } from "@nuka9510/simple-validation";
-import Plugin from "./plugin";
+import Plugin from "./plugin.js";
 export default class Common {
     #plugin;
     #childWindow;
