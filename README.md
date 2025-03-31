@@ -43,6 +43,7 @@ npm i @nuka9510/el-util
   {
     "imports": {
       "@nuka9510/js-util": "<path>/node_modules/@nuka9510/js-util/dist/index.js",
+      "@nuka9510/simple-validation": "<path>/node_modules/@nuka9510/simple-validation/dist/index.js",
       "@nuka9510/el-util": "<path>/node_modules/@nuka9510/el-util/dist/index.js"
     }
   }
@@ -52,6 +53,7 @@ npm i @nuka9510/el-util
   {
     "imports": {
       "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util/dist/index.js",
+      "@nuka9510/simple-validation": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-validation/dist/index.js",
       "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/index.js"
     }
   }
@@ -61,6 +63,7 @@ or
   {
     "imports": {
       "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util@latest/dist/index.js",
+      "@nuka9510/simple-validation": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-validation@latest/dist/index.js",
       "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util@latest/dist/index.js"
     }
   }
@@ -70,6 +73,7 @@ or
   {
     "imports": {
       "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util@<specific-version>/dist/index.js",
+      "@nuka9510/simple-validation": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-validation/@<specific-version>dist/index.js",
       "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util@<specific-version>/dist/index.js"
     }
   }
@@ -117,6 +121,7 @@ new Index();
   {
     "imports": {
       "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util/dist/index.js",
+      "@nuka9510/simple-validation": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-validation/dist/index.js",
       "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/index.js"
     }
   }
