@@ -7,7 +7,7 @@ export as namespace plugin;
 declare namespace plugin {
   interface _plugin {
     action: action;
-    windowAction: actionCallback['callback'][];
+    windowAction: actionCallback[];
   }
 
   interface plugin {

@@ -134,7 +134,7 @@ export default class Common {
       ...this.action
     };
 
-    this.#_windowAction = {
+    this.#_windowAction = [
       ...this.#windowAction,
       ...this.#plugin.reduce(
         (...arg) => {
@@ -145,7 +145,7 @@ export default class Common {
         }, []
       ),
       ...this.windowAction
-    };
+    ];
 
     for (const action in this.#_action) {
       this.#_action[action].forEach((...arg) => { arg[0].callback = arg[0].callback.bind(this); });
