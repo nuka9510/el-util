@@ -106,7 +106,7 @@ export default class Common {
    * ``` 
    */
   constructor(
-    config: config
+    config?: config
   ) {
     const addEvent = this.addEvent;
 

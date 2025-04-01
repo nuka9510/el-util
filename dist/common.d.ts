@@ -38,7 +38,7 @@ export default class Common {
      * </script>
      * ```
      */
-    constructor(config: config);
+    constructor(config?: config);
     addEvent(): void;
     onGetBefore(ev: Event): Promise<boolean | void>;
     onGetAfter(ev: Event): Promise<void>;
