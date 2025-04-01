@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "typeRoots": ["@types/**"],
     "checkJs": true,
     "strictNullChecks": false,
     "noPropertyAccessFromIndexSignature": true,
@@ -12,7 +11,5 @@
     "declaration": true,
     "outDir": "dist"
   },
-  "include": [
-    "src/index.ts"
-  ]
+  "include": ["src/index.ts"]
 }

@@ -1,8 +1,8 @@
+import { action, actionCallback, ChildCloseEvent, ChildCloseEventOption, childWindow, NumberOnlyElement, submitMsg } from "../@types/common";
+import { plugin } from "../@types/plugin";
+import { config } from "@nuka9510/simple-validation/@types/validation";
 import { JUtil } from "@nuka9510/js-util";
 import { SValidation } from "@nuka9510/simple-validation";
-import { action, actionCallback, ChildCloseEvent, ChildCloseEventOption, childWindow, NumberOnlyElement, submitMsg } from "../@types/common.js";
-import { config } from "@nuka9510/simple-validation/@types/validation.js";
-import { plugin } from "../@types/plugin.js";
 import Plugin from "./plugin.js";
 
 export default class Common {

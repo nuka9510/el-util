@@ -1,17 +1,12 @@
-import Common from "../src/common.js";
 import { action, actionCallback } from "./common";
+import Common from "../src/common.js";
 
-export = plugin;
-export as namespace plugin;
+interface _plugin {
+  action: action;
+  windowAction: actionCallback[];
+}
 
-declare namespace plugin {
-  interface _plugin {
-    action: action;
-    windowAction: actionCallback[];
-  }
-
-  interface plugin {
-    target?: Common[] | null;
-    plugin: _plugin;
-  }
+export interface plugin {
+  target?: Common[] | null;
+  plugin: _plugin;
 }

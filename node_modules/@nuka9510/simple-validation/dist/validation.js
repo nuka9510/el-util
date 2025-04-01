@@ -25,11 +25,14 @@ export default class Validation {
      * </form>
      * <script type="importmap">
      *   {
-     *     "imports": { "@nuka9510/simple-validation": "/node_modules/@nuka9510/simple-validation/dist/index.js" }
+     *     "imports": {
+     *       "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util/dist/index.js",
+     *       "@nuka9510/simple-validation": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-validation/dist/index.js"
+     *     }
      *   }
      * </script>
      * <script type="module">
-     *   import SValidation from "@nuka9510/simple-validation";
+     *   import { SValidation } from "@nuka9510/simple-validation";
      *
      *   const validation = new SValidation({regex: {password: /^[\S!?@#$%^&*():;+-=~{}<>\_\[\]\|\\\"\'\,\.\/\`]{6,10}$/}});
      *
