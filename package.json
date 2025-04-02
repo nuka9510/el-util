@@ -1,6 +1,6 @@
 {
   "name": "@nuka9510/el-util",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "nuka9510's javascript element object util for web front-end",
   "main": "dist/index.js",
   "type": "module",
