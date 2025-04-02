@@ -3,6 +3,8 @@ import { config } from "@nuka9510/simple-validation/@types/validation";
 import { SValidation } from "@nuka9510/simple-validation";
 export default class Common {
     #private;
+    /** `init` 실행 여부 */
+    get isInit(): boolean;
     /** `submit` 이벤트를 전달할 `HTMLFormElement` 객체 */
     form?: HTMLFormElement;
     /** `validation` 확인을 위한 객체 */

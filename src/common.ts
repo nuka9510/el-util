@@ -6,6 +6,11 @@ import { SValidation } from "@nuka9510/simple-validation";
 import Plugin from "./plugin.js";
 
 export default class Common {
+  #isInit: boolean = false;
+
+  /** `init` 실행 여부 */
+  get isInit(): boolean { return this.#isInit; }
+
   #plugin: plugin[];
 
   #childWindow?: childWindow;
@@ -112,7 +117,17 @@ export default class Common {
   constructor(
     config?: config
   ) {
-    const addEvent = this.addEvent;
+    const init = this.init,
+    addEvent = this.addEvent;
+
+    this.init = () => {
+      if (!this.#isInit) {
+        init();
+        this.#init();
+
+        this.#isInit = true;
+      }
+    }
 
     this.addEvent = () => {
       addEvent();
@@ -122,7 +137,7 @@ export default class Common {
     this.validation = new SValidation(config);
 
     this.init();
-    this.#init();
+    this.addEvent();
   }
 
   /** `Common`객체 할당 될 때 실행한다. */
@@ -170,8 +185,6 @@ export default class Common {
         callback: arg[0].callback.bind(this)
       };
     });
-
-    this.addEvent();
   }
 
   /** `Common`객체의 `action`에 정의한 이벤트를 `addEventListener`에 적용한다. */

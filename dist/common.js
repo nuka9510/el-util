@@ -2,6 +2,9 @@ import { JUtil } from "@nuka9510/js-util";
 import { SValidation } from "@nuka9510/simple-validation";
 import Plugin from "./plugin.js";
 export default class Common {
+    #isInit = false;
+    /** `init` 실행 여부 */
+    get isInit() { return this.#isInit; }
     #plugin;
     #childWindow;
     #submitMsg = {
@@ -95,14 +98,21 @@ export default class Common {
      * ```
      */
     constructor(config) {
-        const addEvent = this.addEvent;
+        const init = this.init, addEvent = this.addEvent;
+        this.init = () => {
+            if (!this.#isInit) {
+                init();
+                this.#init();
+                this.#isInit = true;
+            }
+        };
         this.addEvent = () => {
             addEvent();
             this.#addEvent();
         };
         this.validation = new SValidation(config);
         this.init();
-        this.#init();
+        this.addEvent();
     }
     /** `Common`객체 할당 될 때 실행한다. */
     init() { }
@@ -138,7 +148,6 @@ export default class Common {
                 callback: arg[0].callback.bind(this)
             };
         });
-        this.addEvent();
     }
     /** `Common`객체의 `action`에 정의한 이벤트를 `addEventListener`에 적용한다. */
     addEvent() { }
