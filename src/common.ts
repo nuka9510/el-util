@@ -130,8 +130,8 @@ export default class Common {
     }
 
     this.addEvent = () => {
-      addEvent();
       this.#addEvent();
+      addEvent();
     };
 
     this.validation = new SValidation(config);
