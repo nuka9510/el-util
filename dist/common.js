@@ -98,7 +98,7 @@ export default class Common {
      * ```
      */
     constructor(config) {
-        const init = this.init, addEvent = this.addEvent;
+        const init = this.init.bind(this), addEvent = this.addEvent.bind(this);
         this.init = () => {
             if (!this.#isInit) {
                 init();
