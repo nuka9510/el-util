@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/nuka9510/el-util",
   "dependencies": {
-    "@nuka9510/js-util": "^1.0.25",
-    "@nuka9510/simple-validation": "^1.0.9"
+    "@nuka9510/js-util": "^1.0.26",
+    "@nuka9510/simple-validation": "^1.0.10"
   }
 }

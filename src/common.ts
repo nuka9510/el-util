@@ -66,12 +66,16 @@ export default class Common {
     ];
   }
 
+  /** `submit` 이벤트를 전달할 `HTMLFormElement` 객체 */
   form?: HTMLFormElement;
 
+  /** `validation` 확인을 위한 객체 */
   validation: SValidation;
 
+  /** `EventListener`에 할당 할 `data-eu-action`을 정의한 `action` */
   get action(): action { return {}; }
 
+  /** `window`객체의 `EventListener`에 할당 할 `actionCallback` */
   get windowAction(): actionCallback[] { return []; }
 
   /**
@@ -116,6 +120,15 @@ export default class Common {
     };
 
     this.validation = new SValidation(config);
+
+    this.init();
+    this.#init();
+  }
+
+  /** `Common`객체 할당 될 때 실행한다. */
+  init(): void {}
+
+  #init(): void {
     this.#plugin = Plugin.plugin.filter(
       (...arg) => JUtil.empty(arg[0].target) ||
                   arg[0].target.includes(this)
@@ -161,6 +174,7 @@ export default class Common {
     this.addEvent();
   }
 
+  /** `Common`객체의 `action`에 정의한 이벤트를 `addEventListener`에 적용한다. */
   addEvent(): void {}
 
   #addEvent(): void {
@@ -207,10 +221,12 @@ export default class Common {
     ev: Event
   ): void { ev.stopPropagation(); }
 
+  /** `data-eu-action="get"`의 이벤트가 실행 되기 전에 실행 한다. */
   async onGetBefore(
     ev: Event
   ): Promise<boolean | void> {};
 
+  /** `data-eu-action="get"`의 이벤트가 실행 된 후에 실행 한다. */
   async onGetAfter(
     ev: Event
   ): Promise<void> {};
@@ -259,10 +275,12 @@ export default class Common {
       });
   }
 
+  /** `data-eu-action="post"`의 이벤트가 실행 되기 전에 실행 한다. */
   async onPostBefore(
     ev: Event
   ): Promise<boolean | void> {};
 
+  /** `data-eu-action="post"`의 이벤트가 실행 된 후에 실행 한다. */
   async onPostAfter(
     ev: Event
   ): Promise<void> {}
@@ -324,6 +342,7 @@ export default class Common {
       });
   }
 
+  /** `data-eu-action="sub-select"`의 이벤트가 실행 된 후에 실행 한다. */
   async onSubSelectAfter(
     ev: Event
   ): Promise<void> {}
@@ -370,6 +389,7 @@ export default class Common {
     });
   }
 
+  /** `data-eu-action="check-all"`의 이벤트가 실행 된 후에 실행 한다. */
   async onCheckAllAfter(
     ev: MouseEvent
   ): Promise<void> {}
@@ -646,6 +666,7 @@ export default class Common {
       .catch((e) => { console.error(e); });
   }
 
+  /** `data-eu-action="check"`의 이벤트가 실행 된 후에 실행 한다. */
   async onCheckAfter(
     ev: MouseEvent
   ): Promise<void> {}
@@ -676,11 +697,13 @@ export default class Common {
     await this.onCheckAfter(ev);
   }
 
-  childCloseEvent(
+  /** `ChildCloseEvent`객체를 반환 한다. */
+  static childCloseEvent(
     opt: ChildCloseEventOption
   ): ChildCloseEvent { return new CustomEvent('child-close', opt); }
 
-  async onChildCloseAfter(
+  /** `window`객체에 `ChildCloseEvent`이벤트가 전달 되었을 경우 실행 한다. */
+  async onChildClose(
     ev: ChildCloseEvent
   ): Promise<void> {};
 
@@ -695,7 +718,7 @@ export default class Common {
   async #onChildClose(
     ev: ChildCloseEvent
   ): Promise<void> {
-    await this.onChildCloseAfter(ev);
+    await this.onChildClose(ev);
 
     if (ev.detail.reload ?? true) { location.reload(); }
   }

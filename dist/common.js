@@ -55,9 +55,13 @@ export default class Common {
             { event: 'child-close', callback: this.#onChildClose }
         ];
     }
+    /** `submit` 이벤트를 전달할 `HTMLFormElement` 객체 */
     form;
+    /** `validation` 확인을 위한 객체 */
     validation;
+    /** `EventListener`에 할당 할 `data-eu-action`을 정의한 `action` */
     get action() { return {}; }
+    /** `window`객체의 `EventListener`에 할당 할 `actionCallback` */
     get windowAction() { return []; }
     /**
      * ```
@@ -97,6 +101,12 @@ export default class Common {
             this.#addEvent();
         };
         this.validation = new SValidation(config);
+        this.init();
+        this.#init();
+    }
+    /** `Common`객체 할당 될 때 실행한다. */
+    init() { }
+    #init() {
         this.#plugin = Plugin.plugin.filter((...arg) => JUtil.empty(arg[0].target) ||
             arg[0].target.includes(this));
         this.#_action = {
@@ -130,6 +140,7 @@ export default class Common {
         });
         this.addEvent();
     }
+    /** `Common`객체의 `action`에 정의한 이벤트를 `addEventListener`에 적용한다. */
     addEvent() { }
     #addEvent() {
         for (const action in this.#_action) {
@@ -172,8 +183,10 @@ export default class Common {
      * - separator: `' '`
      */
     #onStopPropagation(ev) { ev.stopPropagation(); }
+    /** `data-eu-action="get"`의 이벤트가 실행 되기 전에 실행 한다. */
     async onGetBefore(ev) { }
     ;
+    /** `data-eu-action="get"`의 이벤트가 실행 된 후에 실행 한다. */
     async onGetAfter(ev) { }
     ;
     /**
@@ -219,8 +232,10 @@ export default class Common {
             }
         });
     }
+    /** `data-eu-action="post"`의 이벤트가 실행 되기 전에 실행 한다. */
     async onPostBefore(ev) { }
     ;
+    /** `data-eu-action="post"`의 이벤트가 실행 된 후에 실행 한다. */
     async onPostAfter(ev) { }
     /**
      * ```
@@ -279,6 +294,7 @@ export default class Common {
             }
         });
     }
+    /** `data-eu-action="sub-select"`의 이벤트가 실행 된 후에 실행 한다. */
     async onSubSelectAfter(ev) { }
     /**
      * ```
@@ -316,6 +332,7 @@ export default class Common {
             arg[0].dispatchEvent(new Event('change'));
         });
     }
+    /** `data-eu-action="check-all"`의 이벤트가 실행 된 후에 실행 한다. */
     async onCheckAllAfter(ev) { }
     /**
      * ```
@@ -526,6 +543,7 @@ export default class Common {
             .then((value) => { alert('링크가 클립보드에 저장되었습니다.'); })
             .catch((e) => { console.error(e); });
     }
+    /** `data-eu-action="check"`의 이벤트가 실행 된 후에 실행 한다. */
     async onCheckAfter(ev) { }
     /**
      * ```
@@ -547,8 +565,10 @@ export default class Common {
         target.value = node.checked ? target.dataset['euTrue'] : target.dataset['euFalse'];
         await this.onCheckAfter(ev);
     }
-    childCloseEvent(opt) { return new CustomEvent('child-close', opt); }
-    async onChildCloseAfter(ev) { }
+    /** `ChildCloseEvent`객체를 반환 한다. */
+    static childCloseEvent(opt) { return new CustomEvent('child-close', opt); }
+    /** `window`객체에 `ChildCloseEvent`이벤트가 전달 되었을 경우 실행 한다. */
+    async onChildClose(ev) { }
     ;
     /**
      * ```
@@ -559,7 +579,7 @@ export default class Common {
      * ```
      */
     async #onChildClose(ev) {
-        await this.onChildCloseAfter(ev);
+        await this.onChildClose(ev);
         if (ev.detail.reload ?? true) {
             location.reload();
         }

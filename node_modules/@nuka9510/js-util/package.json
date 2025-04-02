@@ -1,6 +1,6 @@
 {
   "name": "@nuka9510/js-util",
-  "version": "1.0.25",
+  "version": "1.0.26",
   "description": "nuka9510's javascript util for web front-end",
   "main": "dist/index.js",
   "type": "module",
