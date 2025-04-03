@@ -117,30 +117,29 @@ export default class Common {
   constructor(
     config?: config
   ) {
-    const init = this.init.bind(this),
-    addEvent = this.addEvent.bind(this);
-
-    this.init = () => {
-      if (!this.#isInit) {
-        init();
-        this.#init();
-
-        this.#isInit = true;
-      }
-    }
+    const addEvent = this.addEvent.bind(this),
+    init = this.init.bind(this);
 
     this.addEvent = () => {
       this.#addEvent();
       addEvent();
     };
 
-    this.validation = new SValidation(config);
+    this.init = () => {
+      init();
+      this.#init();
+      this.addEvent();
 
-    this.init();
-    this.addEvent();
+      this.init = () => {
+        init();
+        this.addEvent();
+      }
+    }
+
+    this.validation = new SValidation(config);
   }
 
-  /** `Common`객체 할당 될 때 실행한다. */
+  /** `Common`객체 초기화. */
   init(): void {}
 
   #init(): void {

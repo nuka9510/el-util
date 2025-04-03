@@ -99,6 +99,12 @@ class Index extends EUCommon {
     };
   }
 
+  constructor() {
+    super();
+    
+    this.init();
+  }
+
   onTestClick(ev) { alert('test'); }
 
 }

@@ -98,23 +98,23 @@ export default class Common {
      * ```
      */
     constructor(config) {
-        const init = this.init.bind(this), addEvent = this.addEvent.bind(this);
-        this.init = () => {
-            if (!this.#isInit) {
-                init();
-                this.#init();
-                this.#isInit = true;
-            }
-        };
+        const addEvent = this.addEvent.bind(this), init = this.init.bind(this);
         this.addEvent = () => {
             this.#addEvent();
             addEvent();
         };
+        this.init = () => {
+            init();
+            this.#init();
+            this.addEvent();
+            this.init = () => {
+                init();
+                this.addEvent();
+            };
+        };
         this.validation = new SValidation(config);
-        this.init();
-        this.addEvent();
     }
-    /** `Common`객체 할당 될 때 실행한다. */
+    /** `Common`객체 초기화. */
     init() { }
     #init() {
         this.#plugin = Plugin.plugin.filter((...arg) => JUtil.empty(arg[0].target) ||

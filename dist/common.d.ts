@@ -45,7 +45,7 @@ export default class Common {
      * ```
      */
     constructor(config?: config);
-    /** `Common`객체 할당 될 때 실행한다. */
+    /** `Common`객체 초기화. */
     init(): void;
     /** `Common`객체의 `action`에 정의한 이벤트를 `addEventListener`에 적용한다. */
     addEvent(): void;
