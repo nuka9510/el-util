@@ -362,7 +362,10 @@ export default class Common {
     }
     /**
      * ```
-     * <button type="button" data-eu-action="win-open" data-eu-option="[ string ]" data-eu-url="[ string ]"> 버튼 </button>
+     * <form id="[ string ]">
+     *   <input type="text" name="name" value="value">
+     * </form>
+     * <button type="button" data-eu-action="win-open" data-eu-option="[ string ]" data-eu-url="[ string ]" data-eu-form="[ form ]"> 버튼 </button>
      * <script type="application/json" data-eu-name="win-open" data-eu-id="[ string ]">
      *   {"name": "[window-name]", "pos": "center", "width": 1700, "height": 800, "scrollbars": "yes", "resizable": "yes"}
      * </script>
@@ -373,12 +376,18 @@ export default class Common {
      * - target `data-eu-id`
      * #### data-eu-url
      * - link
+     * #### data-eu-form
+     * - form tag id
      * #### data-eu-id
      */
     #onWinOpen(ev) {
         const node = ev.currentTarget;
         if (!JUtil.empty(node.dataset['euOption'])) {
-            const url = node.dataset['euUrl'], option = JSON.parse(document.querySelector(`script[data-eu-name="win-open"][data-eu-id="${node.dataset['euOption']}"]`)?.innerText ?? '{}');
+            const url = /^https?:/.test(node.dataset['euUrl']) ? new URL(node.dataset['euUrl']) : new URL(node.dataset['euUrl'], location.origin), option = JSON.parse(document.querySelector(`script[data-eu-name="win-open"][data-eu-id="${node.dataset['euOption']}"]`)?.innerText ?? '{}');
+            if (!JUtil.empty(node.dataset['euForm'])) {
+                const form = document.querySelector(`form${node.dataset['euForm']}`), searchParam = new URLSearchParams(new FormData(form));
+                url.search = `${url.search || '?'}${url.search && '&'}${searchParam}`;
+            }
             let optiontext = '';
             switch (option?.pos) {
                 case 'center':

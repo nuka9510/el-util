@@ -430,7 +430,10 @@ export default class Common {
 
   /**
    * ```
-   * <button type="button" data-eu-action="win-open" data-eu-option="[ string ]" data-eu-url="[ string ]"> 버튼 </button>
+   * <form id="[ string ]">
+   *   <input type="text" name="name" value="value">
+   * </form>
+   * <button type="button" data-eu-action="win-open" data-eu-option="[ string ]" data-eu-url="[ string ]" data-eu-form="[ form ]"> 버튼 </button>
    * <script type="application/json" data-eu-name="win-open" data-eu-id="[ string ]">
    *   {"name": "[window-name]", "pos": "center", "width": 1700, "height": 800, "scrollbars": "yes", "resizable": "yes"}
    * </script>
@@ -441,6 +444,8 @@ export default class Common {
    * - target `data-eu-id`
    * #### data-eu-url
    * - link
+   * #### data-eu-form
+   * - form tag id
    * #### data-eu-id
    */
   #onWinOpen(
@@ -449,8 +454,15 @@ export default class Common {
     const node = ev.currentTarget as HTMLElement;
 
     if (!JUtil.empty(node.dataset['euOption'])) {
-      const url = node.dataset['euUrl'],
+      const url = /^https?:/.test(node.dataset['euUrl']) ? new URL(node.dataset['euUrl']) :  new URL(node.dataset['euUrl'], location.origin),
       option = JSON.parse(document.querySelector<HTMLScriptElement>(`script[data-eu-name="win-open"][data-eu-id="${ node.dataset['euOption'] }"]`)?.innerText ?? '{}');
+
+      if (!JUtil.empty(node.dataset['euForm'])) {
+        const form = document.querySelector<HTMLFormElement>(`form${node.dataset['euForm']}`),
+        searchParam = new URLSearchParams(new FormData(form) as unknown as string[][]);
+
+        url.search = `${url.search || '?'}${url.search && '&'}${searchParam}`;
+      }
 
       let optiontext = '';
 
