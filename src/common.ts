@@ -450,7 +450,7 @@ export default class Common {
 
     if (!JUtil.empty(node.dataset['euOption'])) {
       const url = node.dataset['euUrl'],
-      option = JSON.parse(document.querySelector<HTMLScriptElement>(`script[data-eu-name="_win_open"][data-eu-id="${ node.dataset['euOption'] }"]`)?.innerText ?? '{}');
+      option = JSON.parse(document.querySelector<HTMLScriptElement>(`script[data-eu-name="win-open"][data-eu-id="${ node.dataset['euOption'] }"]`)?.innerText ?? '{}');
 
       let optiontext = '';
 
