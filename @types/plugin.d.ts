@@ -1,5 +1,5 @@
 import { action, actionCallback } from "./common";
-import Common from "../src/common.js";
+import Common from "../src/common.mjs";
 
 interface _plugin {
   action: action;

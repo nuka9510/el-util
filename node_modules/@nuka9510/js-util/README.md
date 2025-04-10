@@ -38,19 +38,32 @@
 npm i @nuka9510/js-util
 ```
 ## Usage
-### npm
+### js (> 1.1.0)
+#### cdn
+```
+<script src="https://cdn.jsdelivr.net/npm/@nuka9510/js-util/dist/index.min.js"> </script>
+```
+or
+```
+<script src="https://cdn.jsdelivr.net/npm/@nuka9510/js-util@latest/dist/index.min.js"> </script>
+```
+or
+```
+<script src="https://cdn.jsdelivr.net/npm/@nuka9510/js-util@<specific-version>/dist/index.min.js"> </script>
+### module
+#### npm
 ```
 <script type="importmap">
   {
-    "imports": { "@nuka9510/js-util": "<path>/node_modules/@nuka9510/js-util/dist/index.js" }
+    "imports": { "@nuka9510/js-util": "<path>/node_modules/@nuka9510/js-util/dist/index.mjs" }
   }
 </script>
 ```
-### cdn
+#### cdn
 ```
 <script type="importmap">
   {
-    "imports": { "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util/dist/index.js" }
+    "imports": { "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util/dist/index.mjs" }
   }
 </script>
 ```
@@ -58,7 +71,7 @@ or
 ```
 <script type="importmap">
   {
-    "imports": { "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util@latest/dist/index.js" }
+    "imports": { "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util@latest/dist/index.mjs" }
   }
 </script>
 ```
@@ -66,7 +79,7 @@ or
 ```
 <script type="importmap">
   {
-    "imports": { "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util@<specific-version>/dist/index.js" }
+    "imports": { "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util@<specific-version>/dist/index.mjs" }
   }
 </script>
 ```

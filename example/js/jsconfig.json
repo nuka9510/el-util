@@ -9,9 +9,9 @@
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "target": "ESNext",
     "paths": {
-      "@nuka9510/js-util": [ "../../node_modules/@nuka9510/js-util/dist/index.js" ],
-      "@nuka9510/simple-validation": [ "../../node_modules/@nuka9510/simple-validation/dist/index.js" ],
-      "@nuka9510/el-util": [ "../../dist/index.js" ]
+      "@nuka9510/js-util": [ "../../node_modules/@nuka9510/js-util/dist/index.mjs" ],
+      "@nuka9510/simple-validation": [ "../../node_modules/@nuka9510/simple-validation/dist/index.mjs" ],
+      "@nuka9510/el-util": [ "../../dist/index.mjs" ]
     }
   }
 }

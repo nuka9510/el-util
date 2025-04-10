@@ -38,55 +38,77 @@
 npm i @nuka9510/el-util
 ```
 ## Usage
-### npm
+### js (> 1.1.0)
+#### cdn
 ```
-  {
-    "imports": {
-      "@nuka9510/js-util": "<path>/node_modules/@nuka9510/js-util/dist/index.js",
-      "@nuka9510/simple-validation": "<path>/node_modules/@nuka9510/simple-validation/dist/index.js",
-      "@nuka9510/el-util": "<path>/node_modules/@nuka9510/el-util/dist/index.js"
-    }
-  }
-```
-### cdn
-```
-  {
-    "imports": {
-      "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util/dist/index.js",
-      "@nuka9510/simple-validation": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-validation/dist/index.js",
-      "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/index.js"
-    }
-  }
+<script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/index.min.js"> </script>
 ```
 or
 ```
-  {
-    "imports": {
-      "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util@latest/dist/index.js",
-      "@nuka9510/simple-validation": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-validation@latest/dist/index.js",
-      "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util@latest/dist/index.js"
-    }
-  }
+<script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util@latest/dist/index.min.js"> </script>
 ```
 or
 ```
+<script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util@<specific-version>/dist/index.min.js"> </script>
+```
+### module
+#### npm
+```
+<script type="importmap">
   {
     "imports": {
-      "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util@<specific-version>/dist/index.js",
-      "@nuka9510/simple-validation": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-validation@<specific-version>/dist/index.js",
-      "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util@<specific-version>/dist/index.js"
+      "@nuka9510/js-util": "<path>/node_modules/@nuka9510/js-util/dist/index.mjs",
+      "@nuka9510/simple-validation": "<path>/node_modules/@nuka9510/simple-validation/dist/index.mjs",
+      "@nuka9510/el-util": "<path>/node_modules/@nuka9510/el-util/dist/index.mjs"
     }
   }
+</script>
+```
+#### cdn
+```
+<script type="importmap">
+  {
+    "imports": {
+      "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util/dist/index.mjs",
+      "@nuka9510/simple-validation": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-validation/dist/index.mjs",
+      "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/index.mjs"
+    }
+  }
+</script>
+```
+or
+```
+<script type="importmap">
+  {
+    "imports": {
+      "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util@latest/dist/index.mjs",
+      "@nuka9510/simple-validation": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-validation@latest/dist/index.mjs",
+      "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util@latest/dist/index.mjs"
+    }
+  }
+</script>
+```
+or
+```
+<script type="importmap">
+  {
+    "imports": {
+      "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util@<specific-version>/dist/index.mjs",
+      "@nuka9510/simple-validation": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-validation@<specific-version>/dist/index.mjs",
+      "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util@<specific-version>/dist/index.mjs"
+    }
+  }
+</script>
 ```
 ### example
 ```
 example
 ├── js
-│  └── index.js
+│  └── index.mjs
 └── view
    └── index.html
 ```
-- `js/index.js`
+- `js/index.mjs`
 ```
 import { EUCommon } from "@nuka9510/el-util";
 
@@ -126,12 +148,12 @@ new Index();
 <script type="importmap">
   {
     "imports": {
-      "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util/dist/index.js",
-      "@nuka9510/simple-validation": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-validation/dist/index.js",
-      "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/index.js"
+      "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util/dist/index.mjs",
+      "@nuka9510/simple-validation": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-validation/dist/index.mjs",
+      "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/index.mjs"
     }
   }
-</script>
-<script src="../js/index.js" type="module"></script>
+</>
+<script src="../js/index.mjs" type="module"></script>
 </html>
 ```
