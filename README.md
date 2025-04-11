@@ -32,27 +32,20 @@
 
 [top-language]: https://img.shields.io/github/languages/top/nuka9510/el-util
 
-# el-util
-## Installation
-```
-npm i @nuka9510/el-util
-```
 ## Usage
-### js (> 1.1.0)
+### js (> 1.1.2)
 #### cdn
 ```
 <script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/index.min.js"> </script>
-```
-or
-```
+  OR
 <script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util@latest/dist/index.min.js"> </script>
-```
-or
-```
+  OR
 <script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util@<specific-version>/dist/index.min.js"> </script>
 ```
-### module
-#### npm
+### mjs
+```
+npm i @nuka9510/el-util
+```
 ```
 <script type="importmap">
   {
@@ -60,39 +53,15 @@ or
       "@nuka9510/js-util": "<path>/node_modules/@nuka9510/js-util/dist/index.mjs",
       "@nuka9510/simple-validation": "<path>/node_modules/@nuka9510/simple-validation/dist/index.mjs",
       "@nuka9510/el-util": "<path>/node_modules/@nuka9510/el-util/dist/index.mjs"
-    }
-  }
-</script>
-```
-#### cdn
-```
-<script type="importmap">
-  {
-    "imports": {
+        OR
       "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util/dist/index.mjs",
       "@nuka9510/simple-validation": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-validation/dist/index.mjs",
       "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/index.mjs"
-    }
-  }
-</script>
-```
-or
-```
-<script type="importmap">
-  {
-    "imports": {
+        OR
       "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util@latest/dist/index.mjs",
       "@nuka9510/simple-validation": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-validation@latest/dist/index.mjs",
       "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util@latest/dist/index.mjs"
-    }
-  }
-</script>
-```
-or
-```
-<script type="importmap">
-  {
-    "imports": {
+        OR
       "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util@<specific-version>/dist/index.mjs",
       "@nuka9510/simple-validation": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-validation@<specific-version>/dist/index.mjs",
       "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util@<specific-version>/dist/index.mjs"

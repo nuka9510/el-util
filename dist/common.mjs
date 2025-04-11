@@ -1,5 +1,4 @@
-import { JUtil } from "@nuka9510/js-util";
-import { SValidation } from "@nuka9510/simple-validation";
+import { SValidation, JUtil } from "@nuka9510/simple-validation";
 import Plugin from "./plugin.mjs";
 export default class Common {
     #isInit = false;

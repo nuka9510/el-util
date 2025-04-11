@@ -3,21 +3,25 @@ const path = require('path');
 module.exports = [
   {
     mode: 'none',
-    name: 'default',
-    entry: './dist/index.mjs',
+    entry: './dist/index.js',
     output: {
       filename: 'index.js',
       path: path.resolve(__dirname, 'dist'),
-      libraryTarget: 'commonjs'
+      library: {
+        name: 'elUtil',
+        type: 'var'
+      }
     }
   }, {
     mode: 'production',
-    name: 'minimize',
-    entry: './dist/index.mjs',
+    entry: './dist/index.js',
     output: {
       filename: 'index.min.js',
       path: path.resolve(__dirname, 'dist'),
-      libraryTarget: 'commonjs'
+      library: {
+        name: 'elUtil',
+        type: 'var'
+      }
     }
   }
 ];

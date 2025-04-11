@@ -1,5 +1,5 @@
 import { plugin } from "../@types/plugin";
-import { JUtil } from "@nuka9510/js-util";
+import { JUtil } from "@nuka9510/simple-validation";
 
 export default class Plugin {
   /** `SceComponent`에 사용할 `plugin` 배열 객체 */

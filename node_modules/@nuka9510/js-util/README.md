@@ -32,56 +32,47 @@
 
 [top-language]: https://img.shields.io/github/languages/top/nuka9510/js-util
 
-# js-util
-## Installation
+## Usage
+### js (> 1.1.2)
+```
+<script src="https://cdn.jsdelivr.net/npm/@nuka9510/js-util/dist/index.min.js"> </script>
+  OR
+<script src="https://cdn.jsdelivr.net/npm/@nuka9510/js-util@latest/dist/index.min.js"> </script>
+  OR
+<script src="https://cdn.jsdelivr.net/npm/@nuka9510/js-util@<specific-version>/dist/index.min.js"> </script>
+```
+```
+<script type="text/javascript">
+  const foo = "";
+
+  console.debug(jsUtil.Util.empty(foo));
+</script>
+```
+### mjs
 ```
 npm i @nuka9510/js-util
 ```
-## Usage
-### js (> 1.1.0)
-#### cdn
-```
-<script src="https://cdn.jsdelivr.net/npm/@nuka9510/js-util/dist/index.min.js"> </script>
-```
-or
-```
-<script src="https://cdn.jsdelivr.net/npm/@nuka9510/js-util@latest/dist/index.min.js"> </script>
-```
-or
-```
-<script src="https://cdn.jsdelivr.net/npm/@nuka9510/js-util@<specific-version>/dist/index.min.js"> </script>
-```
-### module
-#### npm
 ```
 <script type="importmap">
   {
-    "imports": { "@nuka9510/js-util": "<path>/node_modules/@nuka9510/js-util/dist/index.mjs" }
+    "imports": {
+      "@nuka9510/js-util": "<path>/node_modules/@nuka9510/js-util/dist/index.mjs"
+        OR
+      "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util/dist/index.mjs"
+        OR
+      "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util@latest/dist/index.mjs"
+        OR
+      "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util@<specific-version>/dist/index.mjs"
+    }
   }
 </script>
 ```
-#### cdn
 ```
-<script type="importmap">
-  {
-    "imports": { "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util/dist/index.mjs" }
-  }
-</script>
-```
-or
-```
-<script type="importmap">
-  {
-    "imports": { "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util@latest/dist/index.mjs" }
-  }
-</script>
-```
-or
-```
-<script type="importmap">
-  {
-    "imports": { "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util@<specific-version>/dist/index.mjs" }
-  }
+<script type="module">
+  import { JUtil } from "@nuka9510/js-util";
+  const foo = "";
+
+  console.debug(JUtil.empty(foo));
 </script>
 ```
 ### example

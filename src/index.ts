@@ -3,8 +3,8 @@ import Plugin from "./plugin.mjs";
 import { SValidation, JUtil } from "@nuka9510/simple-validation";
 
 export {
-  Common as EUCommon,
-  Plugin as EUPlugin,
+  Common,
+  Plugin,
   SValidation,
   JUtil
 };

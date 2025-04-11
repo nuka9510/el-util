@@ -1,2 +1,3 @@
 import Validation from "./validation.mjs";
-export { Validation as SValidation };
+import { JUtil } from "@nuka9510/js-util";
+export { Validation as SValidation, JUtil };
