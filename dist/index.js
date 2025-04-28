@@ -124,6 +124,7 @@ class Common {
                 init();
                 this.addEvent();
             };
+            this.#isInit = true;
         };
         this.validation = new _nuka9510_simple_validation__WEBPACK_IMPORTED_MODULE_0__.SValidation(config);
     }

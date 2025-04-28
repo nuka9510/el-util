@@ -133,6 +133,8 @@ export default class Common {
         init();
         this.addEvent();
       }
+
+      this.#isInit = true;
     }
 
     this.validation = new SValidation(config);

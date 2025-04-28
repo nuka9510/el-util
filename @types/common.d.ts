@@ -110,7 +110,7 @@ export interface action {
   'check-all'?: actionCallback[];
   /**
    * ```
-   * <button type="button" data-eu-action="win-open" data-eu-option="[ string ]" data-eu-url="[ string ]"> 버튼 </button>
+   * <button type="button" data-eu-action="win-open" data-eu-option="[ string ]" data-eu-url="[ string ]" data-eu-form="[ form ]"> 버튼 </button>
    * <script type="application/json" data-eu-name="win-open" data-eu-id="[ string ]">
    *   {"name": "[window-name]", "pos": "center", "width": 1700, "height": 800, "scrollbars": "yes", "resizable": "yes"}
    * </script>
