@@ -1,5 +1,6 @@
 import { SValidation, JUtil } from "@nuka9510/simple-validation";
 import Plugin from "./plugin.mjs";
+import Interceptor from "./interceptor.mjs";
 export default class Common {
     #isInit = false;
     /** `init` 실행 여부 */
@@ -140,12 +141,12 @@ export default class Common {
             ...this.windowAction
         ];
         for (const action in this.#_action) {
-            this.#_action[action].forEach((...arg) => { arg[0].callback = arg[0].callback.bind(this); });
+            this.#_action[action].forEach((...arg) => { arg[0].callback = Interceptor.actionHandle(arg[0].callback).bind(this); });
         }
         this.#_windowAction.forEach((...arg) => {
             this.#_windowAction[arg[1]] = {
                 ...arg[0],
-                callback: arg[0].callback.bind(this)
+                callback: Interceptor.actionHandle.bind(this, arg[0].callback)
             };
         });
     }
@@ -163,6 +164,7 @@ export default class Common {
                         });
                     }
                     else {
+                        console.debug(_arg[0].callback.toString());
                         arg[0].addEventListener(_arg[0].event, _arg[0].callback, _arg[0].option);
                     }
                 });

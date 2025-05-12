@@ -12,6 +12,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _nuka9510_simple_validation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _plugin_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6);
+/* harmony import */ var _interceptor_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(7);
+
 
 
 class Common {
@@ -154,12 +156,12 @@ class Common {
             ...this.windowAction
         ];
         for (const action in this.#_action) {
-            this.#_action[action].forEach((...arg) => { arg[0].callback = arg[0].callback.bind(this); });
+            this.#_action[action].forEach((...arg) => { arg[0].callback = _interceptor_mjs__WEBPACK_IMPORTED_MODULE_2__["default"].actionHandle(arg[0].callback).bind(this); });
         }
         this.#_windowAction.forEach((...arg) => {
             this.#_windowAction[arg[1]] = {
                 ...arg[0],
-                callback: arg[0].callback.bind(this)
+                callback: _interceptor_mjs__WEBPACK_IMPORTED_MODULE_2__["default"].actionHandle.bind(this, arg[0].callback)
             };
         });
     }
@@ -177,6 +179,7 @@ class Common {
                         });
                     }
                     else {
+                        console.debug(_arg[0].callback.toString());
                         arg[0].addEventListener(_arg[0].event, _arg[0].callback, _arg[0].option);
                     }
                 });
@@ -1381,12 +1384,44 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _nuka9510_simple_validation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 
 class Plugin {
-    /** `SceComponent`에 사용할 `plugin` 배열 객체 */
+    /** `EUCommon`에 사용할 `plugin` 배열 객체 */
     static #plugin = [];
-    /** `SceComponent`에 사용할 `plugin` 배열 객체 */
+    /** `EUCommon`에 사용할 `plugin` 배열 객체 */
     static get plugin() { return _nuka9510_simple_validation__WEBPACK_IMPORTED_MODULE_0__.JUtil.copy(Plugin.#plugin); }
-    /** `SceComponent`에 사용할 `plugin`을 추가 한다.  */
+    /** `EUCommon`에 사용할 `plugin`을 추가 한다.  */
     static appendPlugin(plugin) { Plugin.#plugin.push(plugin); }
+}
+
+
+/***/ }),
+/* 7 */
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Interceptor)
+/* harmony export */ });
+/* harmony import */ var _nuka9510_simple_validation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
+
+class Interceptor {
+    /** `EUCommon`에 사용할 `interceptor` 배열 객체 */
+    static #interceptor = [];
+    /** `EUCommon`에 사용할 `interceptor` 배열 객체 */
+    static get interceptor() { return _nuka9510_simple_validation__WEBPACK_IMPORTED_MODULE_0__.JUtil.copy(Interceptor.#interceptor); }
+    /** `EUCommon`에 사용할 `interceptor`을 추가 한다.  */
+    static appendInterceptor(interceptor) { Interceptor.#interceptor.push(interceptor); }
+    static actionHandle(callback) {
+        return async (ev) => {
+            const preHandle = Interceptor.interceptor.map((...arg) => arg[0].preHandle), postHandle = Interceptor.interceptor.map((...arg) => arg[0].postHandle);
+            for (const handle of preHandle) {
+                if (!(handle?.(ev) ?? true)) {
+                    return;
+                }
+            }
+            await callback(ev);
+            postHandle.forEach((...arg) => arg[0]?.(ev));
+        };
+    }
 }
 
 
@@ -1453,13 +1488,16 @@ var __webpack_exports__ = {};
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Common: () => (/* reexport safe */ _common_mjs__WEBPACK_IMPORTED_MODULE_0__["default"]),
-/* harmony export */   JUtil: () => (/* reexport safe */ _nuka9510_simple_validation__WEBPACK_IMPORTED_MODULE_2__.JUtil),
+/* harmony export */   Interceptor: () => (/* reexport safe */ _interceptor_mjs__WEBPACK_IMPORTED_MODULE_2__["default"]),
+/* harmony export */   JUtil: () => (/* reexport safe */ _nuka9510_simple_validation__WEBPACK_IMPORTED_MODULE_3__.JUtil),
 /* harmony export */   Plugin: () => (/* reexport safe */ _plugin_mjs__WEBPACK_IMPORTED_MODULE_1__["default"]),
-/* harmony export */   SValidation: () => (/* reexport safe */ _nuka9510_simple_validation__WEBPACK_IMPORTED_MODULE_2__.SValidation)
+/* harmony export */   SValidation: () => (/* reexport safe */ _nuka9510_simple_validation__WEBPACK_IMPORTED_MODULE_3__.SValidation)
 /* harmony export */ });
 /* harmony import */ var _common_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var _plugin_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6);
-/* harmony import */ var _nuka9510_simple_validation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
+/* harmony import */ var _interceptor_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(7);
+/* harmony import */ var _nuka9510_simple_validation__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2);
+
 
 
 
