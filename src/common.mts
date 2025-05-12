@@ -183,13 +183,13 @@ export default class Common {
     this.#_windowAction = allAction.windowAction;
 
     for (const action in this.#_action) {
-      this.#_action[action].forEach((...arg) => { arg[0].callback = Interceptor.actionHandle(arg[0].callback).bind(this); });
+      this.#_action[action].forEach((...arg) => { arg[0].callback = Interceptor.actionHandle(arg[0].callback.bind(this)).bind(this); });
     }
 
     this.#_windowAction.forEach((...arg) => {
       this.#_windowAction[arg[1]] = {
         ...arg[0],
-        callback: Interceptor.actionHandle.bind(this, arg[0].callback)
+        callback: Interceptor.actionHandle(arg[0].callback.bind(this)).bind(this)
       };
     });
   }
@@ -205,10 +205,7 @@ export default class Common {
             arg[0].dataset['euEvent']?.split(' ').forEach((...__arg) => {
               if (!JUtil.empty(__arg[0])) { arg[0].addEventListener(__arg[0], _arg[0].callback, _arg[0].option); }
             });
-          } else {
-            console.debug(_arg[0].callback.toString());
-            arg[0].addEventListener(_arg[0].event, _arg[0].callback, _arg[0].option);
-          }
+          } else { arg[0].addEventListener(_arg[0].event, _arg[0].callback, _arg[0].option); }
         });
       });
     }

@@ -163,12 +163,12 @@ class Common {
         this.#_action = allAction.action;
         this.#_windowAction = allAction.windowAction;
         for (const action in this.#_action) {
-            this.#_action[action].forEach((...arg) => { arg[0].callback = _interceptor_mjs__WEBPACK_IMPORTED_MODULE_2__["default"].actionHandle(arg[0].callback).bind(this); });
+            this.#_action[action].forEach((...arg) => { arg[0].callback = _interceptor_mjs__WEBPACK_IMPORTED_MODULE_2__["default"].actionHandle(arg[0].callback.bind(this)).bind(this); });
         }
         this.#_windowAction.forEach((...arg) => {
             this.#_windowAction[arg[1]] = {
                 ...arg[0],
-                callback: _interceptor_mjs__WEBPACK_IMPORTED_MODULE_2__["default"].actionHandle.bind(this, arg[0].callback)
+                callback: _interceptor_mjs__WEBPACK_IMPORTED_MODULE_2__["default"].actionHandle(arg[0].callback.bind(this)).bind(this)
             };
         });
     }
@@ -186,7 +186,6 @@ class Common {
                         });
                     }
                     else {
-                        console.debug(_arg[0].callback.toString());
                         arg[0].addEventListener(_arg[0].event, _arg[0].callback, _arg[0].option);
                     }
                 });
