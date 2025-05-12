@@ -1,4 +1,4 @@
-import { action, actionCallback, ChildCloseEvent, ChildCloseEventOption } from "../@types/common.js";
+import { action, actionCallback, allAction, ChildCloseEvent, ChildCloseEventOption } from "../@types/common.js";
 import { config } from "@nuka9510/simple-validation/@types/validation";
 import { SValidation } from "@nuka9510/simple-validation";
 export default class Common {
@@ -13,6 +13,8 @@ export default class Common {
     get action(): action;
     /** `window`객체의 `EventListener`에 할당 할 `actionCallback` */
     get windowAction(): actionCallback[];
+    /** `EUCommon`에서 사용할 모든 `action` */
+    get allAction(): allAction;
     /**
      * ```
      * <button type="button" data-eu-action="test-click">test-click</button>

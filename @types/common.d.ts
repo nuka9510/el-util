@@ -178,6 +178,11 @@ export interface action {
   [data_eu_action: string]: actionCallback[];
 }
 
+export interface allAction {
+  action: action;
+  windowAction: actionCallback[];
+}
+
 export interface submitMsg {
   reg: '등록하시겠습니까?';
   mod: '수정하시겠습니까?';

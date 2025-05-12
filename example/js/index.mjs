@@ -13,7 +13,9 @@ class Index extends EUCommon {
     super();
 
     EUInterceptor.appendInterceptor({
-      postHandle: (ev) => { console.debug('interceptor'); }
+      preHandle: (ev, actionCallback) => {
+        console.debug('actionCallback', actionCallback.toString());
+      }
     });
     
     this.init();

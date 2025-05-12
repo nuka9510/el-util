@@ -20,7 +20,6 @@ class Common {
     #isInit = false;
     /** `init` 실행 여부 */
     get isInit() { return this.#isInit; }
-    #plugin;
     #childWindow;
     #submitMsg = {
         reg: '등록하시겠습니까?',
@@ -81,6 +80,33 @@ class Common {
     get action() { return {}; }
     /** `window`객체의 `EventListener`에 할당 할 `actionCallback` */
     get windowAction() { return []; }
+    /** `EUCommon`에서 사용할 모든 `action` */
+    get allAction() {
+        const plugin = _plugin_mjs__WEBPACK_IMPORTED_MODULE_1__["default"].plugin.filter((...arg) => _nuka9510_simple_validation__WEBPACK_IMPORTED_MODULE_0__.JUtil.empty(arg[0].target) ||
+            arg[0].target.includes(this));
+        return {
+            action: {
+                ...this.#action,
+                ...plugin.reduce((...arg) => {
+                    return {
+                        ...arg[0],
+                        ...arg[1].plugin.action
+                    };
+                }, {}),
+                ...this.action
+            },
+            windowAction: [
+                ...this.#windowAction,
+                ...plugin.reduce((...arg) => {
+                    return [
+                        ...arg[0],
+                        ...arg[1].plugin.windowAction
+                    ];
+                }, []),
+                ...this.windowAction
+            ]
+        };
+    }
     /**
      * ```
      * <button type="button" data-eu-action="test-click">test-click</button>
@@ -133,28 +159,9 @@ class Common {
     /** `Common`객체 초기화. */
     init() { }
     #init() {
-        this.#plugin = _plugin_mjs__WEBPACK_IMPORTED_MODULE_1__["default"].plugin.filter((...arg) => _nuka9510_simple_validation__WEBPACK_IMPORTED_MODULE_0__.JUtil.empty(arg[0].target) ||
-            arg[0].target.includes(this));
-        this.#_action = {
-            ...this.#action,
-            ...this.#plugin.reduce((...arg) => {
-                return {
-                    ...arg[0],
-                    ...arg[1].plugin.action
-                };
-            }, {}),
-            ...this.action
-        };
-        this.#_windowAction = [
-            ...this.#windowAction,
-            ...this.#plugin.reduce((...arg) => {
-                return [
-                    ...arg[0],
-                    ...arg[1].plugin.windowAction
-                ];
-            }, []),
-            ...this.windowAction
-        ];
+        const allAction = this.allAction;
+        this.#_action = allAction.action;
+        this.#_windowAction = allAction.windowAction;
         for (const action in this.#_action) {
             this.#_action[action].forEach((...arg) => { arg[0].callback = _interceptor_mjs__WEBPACK_IMPORTED_MODULE_2__["default"].actionHandle(arg[0].callback).bind(this); });
         }
@@ -1414,12 +1421,12 @@ class Interceptor {
         return async (ev) => {
             const preHandle = Interceptor.interceptor.map((...arg) => arg[0].preHandle), postHandle = Interceptor.interceptor.map((...arg) => arg[0].postHandle);
             for (const handle of preHandle) {
-                if (!(handle?.(ev) ?? true)) {
+                if (!(handle?.(ev, callback) ?? true)) {
                     return;
                 }
             }
             await callback(ev);
-            postHandle.forEach((...arg) => arg[0]?.(ev));
+            postHandle.forEach((...arg) => arg[0]?.(ev, callback));
         };
     }
 }

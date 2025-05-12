@@ -1,5 +1,4 @@
-import { action, actionCallback, ChildCloseEvent, ChildCloseEventOption, childWindow, NumberOnlyElement, submitMsg } from "../@types/common.js";
-import { plugin } from "../@types/plugin.js";
+import { action, actionCallback, allAction, ChildCloseEvent, ChildCloseEventOption, childWindow, NumberOnlyElement, submitMsg } from "../@types/common.js";
 import { config } from "@nuka9510/simple-validation/@types/validation";
 import { SValidation, JUtil } from "@nuka9510/simple-validation";
 import Plugin from "./plugin.mjs";
@@ -10,8 +9,6 @@ export default class Common {
 
   /** `init` 실행 여부 */
   get isInit(): boolean { return this.#isInit; }
-
-  #plugin: plugin[];
 
   #childWindow?: childWindow;
 
@@ -83,6 +80,41 @@ export default class Common {
   /** `window`객체의 `EventListener`에 할당 할 `actionCallback` */
   get windowAction(): actionCallback[] { return []; }
 
+  /** `EUCommon`에서 사용할 모든 `action` */
+  get allAction(): allAction {
+    const plugin = Plugin.plugin.filter(
+      (...arg) => JUtil.empty(arg[0].target) ||
+                  arg[0].target.includes(this)
+    );
+
+    return {
+      action: {
+        ...this.#action,
+        ...plugin.reduce(
+          (...arg) => {
+            return {
+              ...arg[0],
+              ...arg[1].plugin.action
+            };
+          }, {}
+        ),
+        ...this.action
+      },
+      windowAction: [
+        ...this.#windowAction,
+        ...plugin.reduce(
+          (...arg) => {
+            return [
+              ...arg[0],
+              ...arg[1].plugin.windowAction
+            ];
+          }, []
+        ),
+        ...this.windowAction
+      ]
+    };
+  }
+
   /**
    * ``` 
    * <button type="button" data-eu-action="test-click">test-click</button>
@@ -145,36 +177,10 @@ export default class Common {
   init(): void {}
 
   #init(): void {
-    this.#plugin = Plugin.plugin.filter(
-      (...arg) => JUtil.empty(arg[0].target) ||
-                  arg[0].target.includes(this)
-    );
+    const allAction = this.allAction;
 
-    this.#_action = {
-      ...this.#action,
-      ...this.#plugin.reduce(
-        (...arg) => {
-          return {
-            ...arg[0],
-            ...arg[1].plugin.action
-          };
-        }, {}
-      ),
-      ...this.action
-    };
-
-    this.#_windowAction = [
-      ...this.#windowAction,
-      ...this.#plugin.reduce(
-        (...arg) => {
-          return [
-            ...arg[0],
-            ...arg[1].plugin.windowAction
-          ];
-        }, []
-      ),
-      ...this.windowAction
-    ];
+    this.#_action = allAction.action;
+    this.#_windowAction = allAction.windowAction;
 
     for (const action in this.#_action) {
       this.#_action[action].forEach((...arg) => { arg[0].callback = Interceptor.actionHandle(arg[0].callback).bind(this); });

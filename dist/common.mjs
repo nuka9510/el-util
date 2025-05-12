@@ -5,7 +5,6 @@ export default class Common {
     #isInit = false;
     /** `init` 실행 여부 */
     get isInit() { return this.#isInit; }
-    #plugin;
     #childWindow;
     #submitMsg = {
         reg: '등록하시겠습니까?',
@@ -66,6 +65,33 @@ export default class Common {
     get action() { return {}; }
     /** `window`객체의 `EventListener`에 할당 할 `actionCallback` */
     get windowAction() { return []; }
+    /** `EUCommon`에서 사용할 모든 `action` */
+    get allAction() {
+        const plugin = Plugin.plugin.filter((...arg) => JUtil.empty(arg[0].target) ||
+            arg[0].target.includes(this));
+        return {
+            action: {
+                ...this.#action,
+                ...plugin.reduce((...arg) => {
+                    return {
+                        ...arg[0],
+                        ...arg[1].plugin.action
+                    };
+                }, {}),
+                ...this.action
+            },
+            windowAction: [
+                ...this.#windowAction,
+                ...plugin.reduce((...arg) => {
+                    return [
+                        ...arg[0],
+                        ...arg[1].plugin.windowAction
+                    ];
+                }, []),
+                ...this.windowAction
+            ]
+        };
+    }
     /**
      * ```
      * <button type="button" data-eu-action="test-click">test-click</button>
@@ -118,28 +144,9 @@ export default class Common {
     /** `Common`객체 초기화. */
     init() { }
     #init() {
-        this.#plugin = Plugin.plugin.filter((...arg) => JUtil.empty(arg[0].target) ||
-            arg[0].target.includes(this));
-        this.#_action = {
-            ...this.#action,
-            ...this.#plugin.reduce((...arg) => {
-                return {
-                    ...arg[0],
-                    ...arg[1].plugin.action
-                };
-            }, {}),
-            ...this.action
-        };
-        this.#_windowAction = [
-            ...this.#windowAction,
-            ...this.#plugin.reduce((...arg) => {
-                return [
-                    ...arg[0],
-                    ...arg[1].plugin.windowAction
-                ];
-            }, []),
-            ...this.windowAction
-        ];
+        const allAction = this.allAction;
+        this.#_action = allAction.action;
+        this.#_windowAction = allAction.windowAction;
         for (const action in this.#_action) {
             this.#_action[action].forEach((...arg) => { arg[0].callback = Interceptor.actionHandle(arg[0].callback).bind(this); });
         }

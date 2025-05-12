@@ -10,12 +10,12 @@ export default class Interceptor {
         return async (ev) => {
             const preHandle = Interceptor.interceptor.map((...arg) => arg[0].preHandle), postHandle = Interceptor.interceptor.map((...arg) => arg[0].postHandle);
             for (const handle of preHandle) {
-                if (!(handle?.(ev) ?? true)) {
+                if (!(handle?.(ev, callback) ?? true)) {
                     return;
                 }
             }
             await callback(ev);
-            postHandle.forEach((...arg) => arg[0]?.(ev));
+            postHandle.forEach((...arg) => arg[0]?.(ev, callback));
         };
     }
 }
