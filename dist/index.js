@@ -1012,7 +1012,7 @@ class Util {
      */
     static isNumber(
     /** 확인할 값 */ arg, 
-    /** `true`일 경우 `arg`의 `type`도 확인 #default `false` */ strict = false) {
+    /** `true`일 경우 `arg`의 `type`도 확인 | #default `false` */ strict = false) {
         let result = !Number.isNaN(Number(arg)) &&
             ['number', 'string'].includes(typeof arg) &&
             !/^\s*$/.test(`${arg}`);
@@ -1058,10 +1058,14 @@ class Util {
      * ```
      */
     static numberFormat(
-    /** 변환할 숫자 */ num, 
-    /** 소숫점 아래 자리 수 #default `0` */ decimals = 0, 
-    /** 소수점 구분자 #default `'.'` */ decimalSeparator = '.', 
-    /** 천 단위 구분자 #default `','` */ thousandsSeparator = ',') {
+    /** 변환할 숫자 - `number` 타입이 아닌경우 `null` 반환 */ num, 
+    /** 소숫점 아래 자리 수 - `number` 타입이 아닌경우 `null` 반환 | #default `0` */ decimals = 0, 
+    /** 소수점 구분자 | #default `'.'` */ decimalSeparator = '.', 
+    /** 천 단위 구분자 | #default `','` */ thousandsSeparator = ',') {
+        if (!Util.isNumber(num, true) &&
+            !Util.isNumber(decimals, true)) {
+            return null;
+        }
         const result = String(num).split('.');
         result[0] = result[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandsSeparator);
         if (!Util.empty(result[1])) {
@@ -1158,7 +1162,7 @@ class Util {
      */
     static equaldate(
     /** 기준 날짜 */ date1, 
-    /** 비교할 날짜 #default `new Date()` */ date2 = new Date()) { return Util.strftime(date1, '%Y-%m-%d') == Util.strftime(date2, '%Y-%m-%d'); }
+    /** 비교할 날짜 | #default `new Date()` */ date2 = new Date()) { return Util.strftime(date1, '%Y-%m-%d') == Util.strftime(date2, '%Y-%m-%d'); }
     /**
      * Date객체에서 해당 하는 요일을 반환한다.
      *
@@ -1174,7 +1178,7 @@ class Util {
      */
     static getWeek(
     /** 요일을 반환할 `Date` 객체 */ date, 
-    /** 해당 요일의 약어반환 대한 구분 값 `false`일 경우 약어 반환 #default `true` */ flag = true) {
+    /** 해당 요일의 약어반환 대한 구분 값 `false`일 경우 약어 반환 | #default `true` */ flag = true) {
         const week = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'], result = week[date.getDay()];
         return (flag) ? result : result.replace(/^([ㄱ-ㅎㅏ-ㅣ가-힣]{1})[ㄱ-ㅎㅏ-ㅣ가-힣]+$/, '$1');
     }
@@ -1274,7 +1278,7 @@ class Util {
     static ratio(
     /** 비율 */ ratio, 
     /** 기준 숫자 */ num, 
-    /** 비율 적용 기준 #default `true` */ flag = true) {
+    /** 비율 적용 기준 | #default `true` */ flag = true) {
         const index = flag
             ? [1, 0]
             : [0, 1];
@@ -1302,7 +1306,7 @@ class Util {
     static decimalAdjust(
     /** 구분 기준 `반올림(round)`, `내림(floor)`, `올림(ceil)` */ type, 
     /** 기준 값 */ value, 
-    /** 소숫점 아래 자리 수 #default `0` */ exp = 0) {
+    /** 소숫점 아래 자리 수 | #default `0` */ exp = 0) {
         const [m, n = '0'] = value.toString().split('e'), adjustValue = Math[type](Number(`${m}e${parseInt(n) + exp}`)), [nm, nn = '0'] = adjustValue.toString().split('e');
         return Number(`${nm}e${parseInt(nn) - exp}`);
     }
