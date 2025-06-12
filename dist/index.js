@@ -1062,7 +1062,7 @@ class Util {
     /** 소숫점 아래 자리 수 - `number` 타입이 아닌경우 `null` 반환 | #default `0` */ decimals = 0, 
     /** 소수점 구분자 | #default `'.'` */ decimalSeparator = '.', 
     /** 천 단위 구분자 | #default `','` */ thousandsSeparator = ',') {
-        if (!Util.isNumber(num, true) &&
+        if (!Util.isNumber(num, true) ||
             !Util.isNumber(decimals, true)) {
             return null;
         }

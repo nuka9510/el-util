@@ -33,6 +33,6 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
-    "@nuka9510/simple-validation": "^1.1.3"
+    "@nuka9510/simple-validation": "^1.1.4"
   }
 }
