@@ -52,18 +52,22 @@ npm i @nuka9510/el-util
     "imports": {
       "@nuka9510/js-util": "<path>/node_modules/@nuka9510/js-util/dist/index.mjs",
       "@nuka9510/simple-validation": "<path>/node_modules/@nuka9510/simple-validation/dist/index.mjs",
+      "@nuka9510/simple-enum": "<path>/node_modules/@nuka9510/simple-enum/dist/index.mjs",
       "@nuka9510/el-util": "<path>/node_modules/@nuka9510/el-util/dist/index.mjs"
         OR
       "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util/dist/index.mjs",
       "@nuka9510/simple-validation": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-validation/dist/index.mjs",
+      "@nuka9510/simple-enum": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-enum/dist/index.mjs",
       "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/index.mjs"
         OR
       "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util@latest/dist/index.mjs",
       "@nuka9510/simple-validation": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-validation@latest/dist/index.mjs",
+      "@nuka9510/simple-enum": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-enum@latest/dist/index.mjs",
       "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util@latest/dist/index.mjs"
         OR
       "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util@<specific-version>/dist/index.mjs",
       "@nuka9510/simple-validation": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-validation@<specific-version>/dist/index.mjs",
+      "@nuka9510/simple-enum": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-enum@<specific-version>/dist/index.mjs",
       "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util@<specific-version>/dist/index.mjs"
     }
   }
@@ -119,6 +123,7 @@ new Index();
     "imports": {
       "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util/dist/index.mjs",
       "@nuka9510/simple-validation": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-validation/dist/index.mjs",
+      "@nuka9510/simple-enum": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-enum/dist/index.mjs",
       "@nuka9510/el-util": "/dist/index.mjs"
     }
   }

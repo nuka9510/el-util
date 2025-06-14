@@ -114,6 +114,8 @@ class Common {
      *   {
      *     "imports": {
      *       "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util/dist/index.js",
+     *       "@nuka9510/simple-validation": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-validation/dist/index.js",
+     *       "@nuka9510/simple-enum": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-enum/dist/index.js",
      *       "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/index.js"
      *     }
      *   }
@@ -1435,6 +1437,106 @@ class Interceptor {
 }
 
 
+/***/ }),
+/* 8 */
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   JUtil: () => (/* reexport safe */ _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_1__.JUtil),
+/* harmony export */   SEnum: () => (/* reexport safe */ _enum_mjs__WEBPACK_IMPORTED_MODULE_0__["default"])
+/* harmony export */ });
+/* harmony import */ var _enum_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9);
+/* harmony import */ var _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4);
+
+
+
+
+
+/***/ }),
+/* 9 */
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Enum)
+/* harmony export */ });
+/* harmony import */ var _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
+
+class Enum {
+    /** `Enum`객체 고유 값 */
+    #value;
+    /**
+     * `Enum`객체
+     *
+     * ```
+     * import { SEnum } from "@nuka9510/simple-enum";
+     *
+     * class Enum extends SEnum {
+     *   static #A = new Enum('A');
+     *
+     *   static #B = new Enum('B');
+     *
+     *   static get A() { return Enum.#A; }
+     *
+     *   static get B() { return Enum.#B; }
+     *
+     *   constructor(value) { super(value); }
+     * }
+     *
+     * const e = Enum.valueOf('A');
+     *
+     * switch (e) {
+     *   case Enum.A: console.log('A', e.value, Enum.A.value); break;
+     *   case Enum.B: console.log('B', e.value, Enum.B.value); break;
+     * }
+     * ```
+     */
+    constructor(value) {
+        this.#value = value;
+        Enum.#setEnums(value, this);
+    }
+    /** `Enum`객체 고유 값 */
+    get value() {
+        if (this.#value?.constructor != Object) {
+            return this.#value;
+        }
+        const __enums__ = Object.getOwnPropertyDescriptor(this.constructor, '__enums__'), __value__ = __enums__.value?.find((...arg) => arg[0].value == this.#value), property = { value: __value__?.id }, value = _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.JUtil.copy(this.#value);
+        Object.defineProperty(value, '__enums_id__', property);
+        return value;
+    }
+    /** `Enum`객체의 `property`를 설정한다. */
+    static #setEnums(value, enums) {
+        const __constructor__ = enums.constructor, __enums__ = (Object.getOwnPropertyDescriptor(__constructor__, '__enums__') ?? {}), __value__ = (__enums__.value ?? []);
+        if (__value__.some((...arg) => arg[0].value == value)) {
+            throw new Error('이미 등록된 값 입니다.');
+        }
+        Object.defineProperty(__constructor__, '__enums__', {
+            ...__enums__,
+            value: [
+                ...__value__,
+                {
+                    value: value,
+                    enums: enums,
+                    id: `${__constructor__.name}-${Date.now()}-${__value__.length}`
+                }
+            ],
+            configurable: true
+        });
+    }
+    /** `value`를 고유 값으로 가지는 `Enum`객체를 반환한다. */
+    static valueOf(value) {
+        const __enums__ = (Object.getOwnPropertyDescriptor(this, '__enums__') ?? {});
+        if (value?.constructor != Object) {
+            return __enums__.value?.find((...arg) => arg[0].value == value)?.enums;
+        }
+        return __enums__.value?.find((...arg) => value.hasOwnProperty('__enums_id__')
+            ? arg[0].id == Object.getOwnPropertyDescriptor(value, '__enums_id__')?.value
+            : arg[0].value == value)?.enums;
+    }
+}
+
+
 /***/ })
 /******/ 	]);
 /************************************************************************/
@@ -1501,12 +1603,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   Interceptor: () => (/* reexport safe */ _interceptor_mjs__WEBPACK_IMPORTED_MODULE_2__["default"]),
 /* harmony export */   JUtil: () => (/* reexport safe */ _nuka9510_simple_validation__WEBPACK_IMPORTED_MODULE_3__.JUtil),
 /* harmony export */   Plugin: () => (/* reexport safe */ _plugin_mjs__WEBPACK_IMPORTED_MODULE_1__["default"]),
+/* harmony export */   SEnum: () => (/* reexport safe */ _nuka9510_simple_enum__WEBPACK_IMPORTED_MODULE_4__.SEnum),
 /* harmony export */   SValidation: () => (/* reexport safe */ _nuka9510_simple_validation__WEBPACK_IMPORTED_MODULE_3__.SValidation)
 /* harmony export */ });
 /* harmony import */ var _common_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var _plugin_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6);
 /* harmony import */ var _interceptor_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(7);
 /* harmony import */ var _nuka9510_simple_validation__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2);
+/* harmony import */ var _nuka9510_simple_enum__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(8);
+
 
 
 
