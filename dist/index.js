@@ -1534,6 +1534,13 @@ class Enum {
             ? arg[0].id == Object.getOwnPropertyDescriptor(value, '__enums_id__')?.value
             : arg[0].value == value)?.enums;
     }
+    /** `Enum`객체에 정의된 `enum`들을 `Iterator`객체로 반환한다. */
+    static values() {
+        const __enums__ = (Object.getOwnPropertyDescriptor(this, '__enums__') ?? {});
+        return __enums__.value
+            ?.values()
+            .map((...arg) => arg[0].enums) ?? null;
+    }
 }
 
 
