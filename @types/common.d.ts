@@ -3,9 +3,13 @@ export interface childWindow {
 }
 
 export interface actionCallback {
-  event?: string;
-  callback: (ev: Event) => void | Promise<void>;
+  event?: string | string[];
+  callback: (
+    ev: Event,
+    target?: EventTarget | HTMLElement
+  ) => void | Promise<void>;
   option?: EventListenerOptions;
+  flag?: boolean;
 }
 
 export interface action {

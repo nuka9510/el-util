@@ -6,5 +6,5 @@ export default class Interceptor {
     static get interceptor(): interceptor[];
     /** `EUCommon`에 사용할 `interceptor`을 추가 한다.  */
     static appendInterceptor(interceptor: interceptor): void;
-    static actionHandle(callback: actionCallback['callback']): (ev: Event) => Promise<void>;
+    static actionHandle(callback: actionCallback['callback'], action?: string, flag?: boolean): (ev: Event) => Promise<void>;
 }

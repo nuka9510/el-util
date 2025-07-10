@@ -53,22 +53,24 @@ export default class Common {
     init(): void;
     /** `Common`객체의 `action`에 정의한 이벤트를 `addEventListener`에 적용한다. */
     addEvent(): void;
+    /** `Common`객체의 `action`에 정의한 이벤트를 `removeEventListener`에 적용한다. */
+    removeEvent(): void;
     /** `data-eu-action="get"`의 이벤트가 실행 되기 전에 실행 한다. */
-    onGetBefore(ev: Event): Promise<boolean | void>;
+    onGetBefore(ev: Event, target: HTMLElement): Promise<boolean | void>;
     /** `data-eu-action="get"`의 이벤트가 실행 된 후에 실행 한다. */
-    onGetAfter(ev: Event): Promise<void>;
+    onGetAfter(ev: Event, target: HTMLElement): Promise<void>;
     /** `data-eu-action="post"`의 이벤트가 실행 되기 전에 실행 한다. */
-    onPostBefore(ev: Event): Promise<boolean | void>;
+    onPostBefore(ev: Event, target: HTMLElement): Promise<boolean | void>;
     /** `data-eu-action="post"`의 이벤트가 실행 된 후에 실행 한다. */
-    onPostAfter(ev: Event): Promise<void>;
+    onPostAfter(ev: Event, target: HTMLElement): Promise<void>;
     /** `data-eu-action="sub-select"`의 이벤트가 실행 된 후에 실행 한다. */
-    onSubSelectAfter(ev: Event): Promise<void>;
+    onSubSelectAfter(ev: Event, target: HTMLSelectElement): Promise<void>;
     /** `data-eu-action="check-all"`의 이벤트가 실행 된 후에 실행 한다. */
-    onCheckAllAfter(ev: MouseEvent): Promise<void>;
+    onCheckAllAfter(ev: MouseEvent, target: HTMLInputElement): Promise<void>;
     /** `data-eu-action="check"`의 이벤트가 실행 된 후에 실행 한다. */
-    onCheckAfter(ev: MouseEvent): Promise<void>;
+    onCheckAfter(ev: MouseEvent, target: HTMLInputElement): Promise<void>;
     /** `ChildCloseEvent`객체를 반환 한다. */
     static childCloseEvent(opt: ChildCloseEventOption): ChildCloseEvent;
     /** `window`객체에 `ChildCloseEvent`이벤트가 전달 되었을 경우 실행 한다. */
-    onChildClose(ev: ChildCloseEvent): Promise<void>;
+    onChildClose(ev: ChildCloseEvent, target: EventTarget): Promise<void>;
 }

@@ -34,6 +34,6 @@
   },
   "dependencies": {
     "@nuka9510/js-util": "^1.1.6",
-    "@nuka9510/simple-validation": "^1.1.4"
+    "@nuka9510/simple-validation": "^1.1.5"
   }
 }

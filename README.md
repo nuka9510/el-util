@@ -83,7 +83,7 @@ example
 ```
 - `js/index.mjs`
 ```
-import { EUCommon } from "@nuka9510/el-util";
+import { EUCommon, EUInterceptor } from "@nuka9510/el-util";
 
 class Index extends EUCommon {
   get action() {
@@ -96,11 +96,21 @@ class Index extends EUCommon {
 
   constructor() {
     super();
+
+    EUInterceptor.appendInterceptor({
+      preHandle: (ev, target) => {
+        console.debug(ev, target);
+        alert('preHandle');
+      }
+    });
     
     this.init();
   }
 
-  onTestClick(ev) { alert('test'); }
+  onTestClick(ev, target) {
+    console.debug(ev, target);
+    alert('test');
+  }
 
 }
 
@@ -116,7 +126,10 @@ new Index();
   <title>Document</title>
 </head>
 <body>
-  <button type="button" data-eu-action="test-click">test-click</button>
+  <button type="button" data-eu-action="test-click"> test-click </button>
+  <button type="button" data-eu-action="test-click">
+    <span> test-click </span>
+  </button>
 </body>
 <script type="importmap">
   {
@@ -127,7 +140,7 @@ new Index();
       "@nuka9510/el-util": "/dist/index.mjs"
     }
   }
-</>
+</script>
 <script src="../js/index.mjs" type="module"></script>
 </html>
 ```
