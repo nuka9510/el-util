@@ -1,6 +1,7 @@
 import { action, actionCallback, allAction, ChildCloseEvent, ChildCloseEventOption, childWindow, NumberOnlyElement, submitMsg } from "../@types/common.js";
 import { config } from "@nuka9510/simple-validation/@types/validation";
-import { SValidation, JUtil } from "@nuka9510/simple-validation";
+import { SValidation } from "@nuka9510/simple-validation";
+import { JUtil } from "@nuka9510/js-util";
 import Plugin from "./plugin.mjs";
 import Interceptor from "./interceptor.mjs";
 
@@ -152,11 +153,17 @@ export default class Common {
     config?: config
   ) {
     const addEvent = this.addEvent.bind(this),
+    removeEvent = this.removeEvent.bind(this),
     init = this.init.bind(this);
 
     this.addEvent = () => {
       this.#addEvent();
       addEvent();
+    };
+
+    this.removeEvent = () => {
+      this.#removeEvent();
+      removeEvent();
     };
 
     this.init = () => {
@@ -213,6 +220,25 @@ export default class Common {
     }
 
     this.#_windowAction.forEach((...arg) => { window.addEventListener(arg[0].event, arg[0].callback, arg[0].option); });
+  }
+
+  /** `Common`객체의 `action`에 정의한 이벤트를 `removeEventListener`에 적용한다. */
+  removeEvent(): void {}
+
+  #removeEvent(): void {
+    for (const action in this.#_action) {
+      document.querySelectorAll<HTMLElement>(`[data-eu-action~="${action}"]`).forEach((...arg) => {
+        this.#_action[action].forEach((..._arg) => {
+          if (JUtil.empty(_arg[0].event)) {
+            arg[0].dataset['euEvent']?.split(' ').forEach((...__arg) => {
+              if (!JUtil.empty(__arg[0])) { arg[0].removeEventListener(__arg[0], _arg[0].callback, _arg[0].option); }
+            });
+          } else { arg[0].removeEventListener(_arg[0].event, _arg[0].callback, _arg[0].option); }
+        });
+      });
+    }
+
+    this.#_windowAction.forEach((...arg) => { window.removeEventListener(arg[0].event, arg[0].callback, arg[0].option); });
   }
 
   /**
