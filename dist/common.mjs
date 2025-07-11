@@ -170,22 +170,18 @@ export default class Common {
      * ```
      */
     constructor(config) {
-        const addEvent = this.addEvent.bind(this), removeEvent = this.removeEvent.bind(this), init = this.init.bind(this);
-        this.addEvent = () => {
-            this.#addEvent();
-            addEvent();
-        };
-        this.removeEvent = () => {
-            this.#removeEvent();
-            removeEvent();
+        const updateEvent = this.updateEvent.bind(this), init = this.init.bind(this);
+        this.updateEvent = () => {
+            this.#updateEvent();
+            updateEvent();
         };
         this.init = () => {
             init();
-            this.#init();
-            this.addEvent();
+            this.#initAction();
+            this.#addEvent();
             this.init = () => {
                 init();
-                this.addEvent();
+                this.updateEvent();
             };
             this.#isInit = true;
         };
@@ -193,7 +189,7 @@ export default class Common {
     }
     /** `Common`객체 초기화. */
     init() { }
-    #init() {
+    #initAction() {
         const allAction = this.allAction;
         this.#_action = allAction.action;
         this.#_windowAction = allAction.windowAction;
@@ -207,7 +203,18 @@ export default class Common {
             };
         });
     }
-    /** `Common`객체의 `action`에 정의한 이벤트를 `addEventListener`에 적용한다. */
+    /**
+     * `Common`객체의 `action`에 정의한 이벤트들의 `eventListener`를 갱신한다.
+     * `removeEventListener` -> `addEventListener`
+     * `eventListener`를 갱신 후 실행할 `callback` 정의.
+     */
+    updateEvent() { }
+    #updateEvent() {
+        this.#removeEvent();
+        this.#initAction();
+        this.#addEvent();
+    }
+    /** `Common`객체의 `action`에 정의한 이벤트를 `addEventListener`에 적용할 시 실행할 `callback`. */
     addEvent() { }
     #addEvent() {
         for (const action in this.#_action) {
@@ -237,8 +244,9 @@ export default class Common {
                 window.addEventListener(arg[0].event, arg[0].callback, arg[0].option);
             }
         });
+        this.addEvent();
     }
-    /** `Common`객체의 `action`에 정의한 이벤트를 `removeEventListener`에 적용한다. */
+    /** `Common`객체의 `action`에 정의한 이벤트를 `removeEventListener`에 적용할 시 실행할 `callback`. */
     removeEvent() { }
     #removeEvent() {
         for (const action in this.#_action) {
@@ -268,6 +276,7 @@ export default class Common {
                 window.removeEventListener(arg[0].event, arg[0].callback, arg[0].option);
             }
         });
+        this.removeEvent();
     }
     /**
      * ```

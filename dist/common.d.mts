@@ -51,9 +51,15 @@ export default class Common {
     constructor(config?: config);
     /** `Common`객체 초기화. */
     init(): void;
-    /** `Common`객체의 `action`에 정의한 이벤트를 `addEventListener`에 적용한다. */
+    /**
+     * `Common`객체의 `action`에 정의한 이벤트들의 `eventListener`를 갱신한다.
+     * `removeEventListener` -> `addEventListener`
+     * `eventListener`를 갱신 후 실행할 `callback` 정의.
+     */
+    updateEvent(): void;
+    /** `Common`객체의 `action`에 정의한 이벤트를 `addEventListener`에 적용할 시 실행할 `callback`. */
     addEvent(): void;
-    /** `Common`객체의 `action`에 정의한 이벤트를 `removeEventListener`에 적용한다. */
+    /** `Common`객체의 `action`에 정의한 이벤트를 `removeEventListener`에 적용할 시 실행할 `callback`. */
     removeEvent(): void;
     /** `data-eu-action="get"`의 이벤트가 실행 되기 전에 실행 한다. */
     onGetBefore(ev: Event, target: HTMLElement): Promise<boolean | void>;
