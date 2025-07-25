@@ -514,7 +514,7 @@ export default class Common {
 
       await this.onSubSelectAfter(ev, target);
 
-      arg[0].dispatchEvent(new Event('change'));
+      arg[0].dispatchEvent(new Event('change', { bubbles: true }));
     });
   }
 

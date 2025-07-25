@@ -444,7 +444,7 @@ export default class Common {
             });
             arg[0].value = '';
             await this.onSubSelectAfter(ev, target);
-            arg[0].dispatchEvent(new Event('change'));
+            arg[0].dispatchEvent(new Event('change', { bubbles: true }));
         });
     }
     /** `data-eu-action="check-all"`의 이벤트가 실행 된 후에 실행 한다. */
