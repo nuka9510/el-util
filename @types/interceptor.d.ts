@@ -1,11 +1,9 @@
-import { actionCallback } from "./common";
-
 export interface interceptor {
-  preHandle: (
+  preHandle?: (
     ev: Event,
     target: EventTarget | HTMLElement
   ) => boolean | void;
-  postHandle: (
+  postHandle?: (
     ev: Event,
     target: EventTarget | HTMLElement
   ) => void;
