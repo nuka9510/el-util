@@ -1,17 +1,11 @@
-import { SValidation } from "@nuka9510/simple-validation";
-import { JUtil } from "@nuka9510/js-util";
-import Plugin from "./plugin.mjs";
-import Interceptor from "./interceptor.mjs";
+import { Util } from "@nuka9510/js-util";
+import Plugin from "./plugin.js";
+import Interceptor from "./interceptor.js";
 export default class Common {
     #isInit = false;
     /** `init` 실행 여부 */
     get isInit() { return this.#isInit; }
     #childWindow;
-    #submitMsg = {
-        reg: '등록하시겠습니까?',
-        mod: '수정하시겠습니까?',
-        del: '삭제하시겠습니까?'
-    };
     #_action;
     get #action() {
         return {
@@ -20,12 +14,6 @@ export default class Common {
             ],
             'stop-propagation': [
                 { callback: this.#onStopPropagation }
-            ],
-            'get': [
-                { callback: this.#onGet }
-            ],
-            'post': [
-                { callback: this.#onPost }
             ],
             'sub-select': [
                 { event: 'change', callback: this.#onSubSelect }
@@ -58,17 +46,13 @@ export default class Common {
             { event: 'child-close', callback: this.#onChildClose }
         ];
     }
-    /** `submit` 이벤트를 전달할 `HTMLFormElement` 객체 */
-    form;
-    /** `validation` 확인을 위한 객체 */
-    validation;
     /** `EventListener`에 할당 할 `data-eu-action`을 정의한 `action` */
     get action() { return {}; }
     /** `window`객체의 `EventListener`에 할당 할 `actionCallback` */
     get windowAction() { return []; }
     /** `EUCommon`에서 사용할 모든 `action` */
     get allAction() {
-        const plugin = Plugin.plugin.filter((...arg) => JUtil.empty(arg[0].target) ||
+        const plugin = Plugin.plugin.filter((...arg) => Util.empty(arg[0].target) ||
             arg[0].target.includes(this)), action = {
             ...this.#action,
             ...plugin.reduce((...arg) => {
@@ -91,7 +75,7 @@ export default class Common {
         let _action = {};
         for (const key in action) {
             for (const value of action[key].values()) {
-                if (JUtil.empty(value.event)) {
+                if (Util.empty(value.event)) {
                     _action[key] = [
                         ...(_action[key] ?? []),
                         value
@@ -100,7 +84,7 @@ export default class Common {
             }
         }
         const keys = Object.keys(_action);
-        if (!JUtil.empty(keys)) {
+        if (!Util.empty(keys)) {
             document.querySelectorAll(`[data-eu-action~="${keys.join('"], [data-eu-action~="')}"]`)
                 .forEach((...arg) => {
                 if (!arg[0].hasAttribute('data-eu-event')) {
@@ -126,7 +110,7 @@ export default class Common {
             });
             for (const key in _action) {
                 action[key] = [
-                    ...action[key].filter((...arg) => !JUtil.empty(arg[0].event)),
+                    ...action[key].filter((...arg) => !Util.empty(arg[0].event)),
                     ..._action[key]
                 ];
             }
@@ -138,38 +122,25 @@ export default class Common {
     }
     /**
      * ```
-     * <button type="button" data-eu-action="test-click">test-click</button>
-     * <script type="importmap">
-     *   {
-     *     "imports": {
-     *       "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util/dist/index.js",
-     *       "@nuka9510/simple-validation": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-validation/dist/index.js",
-     *       "@nuka9510/simple-enum": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-enum/dist/index.js",
-     *       "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/index.js"
-     *     }
-     *   }
-     * </script>
-     * <script type="module">
-     *   import { EUCommon } from "@nuka9510/el-util";
+     * import { Common } from "@nuka9510/el-util";
      *
-     *   class Index extends EUCommon {
-     *     get action() {
-     *       return {
-     *         'test-click': [
-     *           { event: 'click', callback: this.onTestClick }
-     *         ]
-     *       };
-     *     }
-     *
-     *     onTestClick(ev) { alert('test'); }
-     *
+     * class Index extends Common {
+     *   get action() {
+     *     return {
+     *       'test-click': [
+     *         { event: 'click', callback: this.onTestClick }
+     *       ]
+     *     };
      *   }
      *
-     *   new Index();
-     * </script>
+     *   onTestClick(ev) { alert('test'); }
+     *
+     * }
+     *
+     * new Index();
      * ```
      */
-    constructor(config) {
+    constructor() {
         const updateEvent = this.updateEvent.bind(this), init = this.init.bind(this);
         this.updateEvent = () => {
             this.#updateEvent();
@@ -185,7 +156,6 @@ export default class Common {
             };
             this.#isInit = true;
         };
-        this.validation = new SValidation(config);
     }
     /** `Common`객체 초기화. */
     init() { }
@@ -220,7 +190,7 @@ export default class Common {
         for (const action in this.#_action) {
             this.#_action[action]
                 .forEach((...arg) => {
-                if (JUtil.empty(arg[0].event)) {
+                if (Util.empty(arg[0].event)) {
                     return;
                 }
                 if (Array.isArray(arg[0].event)) {
@@ -233,7 +203,7 @@ export default class Common {
             });
         }
         this.#_windowAction.forEach((...arg) => {
-            if (JUtil.empty(arg[0].event)) {
+            if (Util.empty(arg[0].event)) {
                 return;
             }
             if (Array.isArray(arg[0].event)) {
@@ -252,7 +222,7 @@ export default class Common {
         for (const action in this.#_action) {
             this.#_action[action]
                 .forEach((...arg) => {
-                if (JUtil.empty(arg[0].event)) {
+                if (Util.empty(arg[0].event)) {
                     return;
                 }
                 if (Array.isArray(arg[0].event)) {
@@ -265,7 +235,7 @@ export default class Common {
             });
         }
         this.#_windowAction.forEach((...arg) => {
-            if (JUtil.empty(arg[0].event)) {
+            if (Util.empty(arg[0].event)) {
                 return;
             }
             if (Array.isArray(arg[0].event)) {
@@ -300,115 +270,6 @@ export default class Common {
      * - separator: `' '`
      */
     #onStopPropagation(ev, target) { ev.stopPropagation(); }
-    /** `data-eu-action="get"`의 이벤트가 실행 되기 전에 실행 한다. */
-    async onGetBefore(ev, target) { }
-    ;
-    /** `data-eu-action="get"`의 이벤트가 실행 된 후에 실행 한다. */
-    async onGetAfter(ev, target) { }
-    ;
-    /**
-     * ```
-     * <button type="submit" data-eu-action="get" data-eu-url="[ string ]" data-eu-validation="[ 'Y' | 'N' ]" data-eu-event="[ string ]"> submit </button>
-     * ```
-     *
-     * ## attribute
-     * #### data-eu-url
-     * - link
-     * #### data-eu-validation - `optional`
-     * - validation check 구분
-     * - default: `'Y'`
-     * #### data-eu-event
-     * - 이벤트
-     * - separator: `' '`
-     */
-    async #onGet(ev, target) {
-        await this.onGetBefore(ev, target)
-            .then(async (result) => {
-            if (!JUtil.empty(this.form)) {
-                this.validation.init();
-                if (result ?? true) {
-                    if ((target.dataset['euValidation'] ?? 'Y') == 'Y') {
-                        this.validation.run(this.form);
-                    }
-                    if (this.validation.result.flag) {
-                        this.form.action = target.dataset['euUrl'];
-                        this.form.submit();
-                    }
-                    else {
-                        await this.onGetAfter(ev, target);
-                        alert(this.validation.result.alertMsg);
-                        this.validation.result.el?.focus();
-                    }
-                }
-            }
-            else {
-                if (result ?? true) {
-                    location.href = target.dataset['euUrl'];
-                }
-            }
-        });
-    }
-    /** `data-eu-action="post"`의 이벤트가 실행 되기 전에 실행 한다. */
-    async onPostBefore(ev, target) { }
-    ;
-    /** `data-eu-action="post"`의 이벤트가 실행 된 후에 실행 한다. */
-    async onPostAfter(ev, target) { }
-    /**
-     * ```
-     * <button type="submit" data-eu-action="post" data-eu-url="[ string ]" data-eu-state="[ 'reg' | 'mod' | 'del' ]" data-eu-validation="[ 'Y' | 'N' ]" data-eu-msg="[ string ]" data-eu-event="[ string ]"> submit </button>
-     * ```
-     *
-     * ## attribute
-     * #### data-eu-url
-     * - link
-     * #### data-eu-state - `optional`
-     * - post type
-     * #### data-eu-validation - `optional`
-     * - validation check 구분
-     * - default:
-     * - - data-eu-state="del":
-     * - - - `'N'`
-     * - - otherwise:
-     * - - - `'Y'`
-     * #### data-eu-msg - `optional`
-     * - confirm msg
-     * #### data-eu-event
-     * - 이벤트
-     * - separator: `' '`
-     */
-    async #onPost(ev, target) {
-        await this.onPostBefore(ev, target)
-            .then(async (result) => {
-            let flag = true;
-            this.validation.init();
-            if (result ?? true) {
-                if (JUtil.empty(target.dataset['euMsg'] || target.dataset['euState']) ||
-                    confirm(target.dataset['euMsg'] || this.#submitMsg[target.dataset['euState']])) {
-                    if ((target.dataset['euValidation'] ?? ((target.dataset['euState'] == 'del') ? 'N' : 'Y')) == 'Y') {
-                        this.validation.run(this.form);
-                    }
-                    if (this.validation.result.flag) {
-                        this.form.action = `${target.dataset['euUrl']}${location.search}`;
-                        this.form.submit();
-                    }
-                    else {
-                        await this.onPostAfter(ev, target);
-                        alert(this.validation.result.alertMsg);
-                        this.validation.result.el?.focus();
-                    }
-                }
-                else {
-                    flag = false;
-                }
-            }
-            else {
-                flag = false;
-            }
-            if (!flag) {
-                await this.onPostAfter(ev, target);
-            }
-        });
-    }
     /** `data-eu-action="sub-select"`의 이벤트가 실행 된 후에 실행 한다. */
     async onSubSelectAfter(ev, target) { }
     /**
@@ -438,7 +299,7 @@ export default class Common {
         const subNode = document.querySelectorAll(`select[data-eu-name="${target.dataset['euTarget']}"]`);
         subNode.forEach(async (...arg) => {
             arg[0].querySelectorAll('option').forEach((..._arg) => {
-                if (!JUtil.empty(_arg[0].value)) {
+                if (!Util.empty(_arg[0].value)) {
                     _arg[0].style.setProperty('display', (target.value == _arg[0].dataset['euMain']) ? 'block' : 'none');
                 }
             });
@@ -486,9 +347,9 @@ export default class Common {
      * #### data-eu-id
      */
     #onWinOpen(ev, target) {
-        if (!JUtil.empty(target.dataset['euOption'])) {
+        if (!Util.empty(target.dataset['euOption'])) {
             const url = /^https?:/.test(target.dataset['euUrl']) ? new URL(target.dataset['euUrl']) : new URL(target.dataset['euUrl'], location.origin), option = JSON.parse(document.querySelector(`script[data-eu-name="win-open"][data-eu-id="${target.dataset['euOption']}"]`)?.innerText ?? '{}');
-            if (!JUtil.empty(target.dataset['euForm'])) {
+            if (!Util.empty(target.dataset['euForm'])) {
                 const form = document.querySelector(`form${target.dataset['euForm']}`), searchParam = new URLSearchParams(new FormData(form));
                 url.search = `${url.search || '?'}${url.search && '&'}${searchParam}`;
             }
@@ -501,18 +362,18 @@ export default class Common {
             }
             for (const key in option) {
                 if (!['name', 'pos'].includes(key)) {
-                    if (!JUtil.empty(optiontext)) {
+                    if (!Util.empty(optiontext)) {
                         optiontext += ', ';
                     }
                     optiontext += `${key}=${option[key]}`;
                 }
             }
-            if (JUtil.empty(option.name)) {
+            if (Util.empty(option.name)) {
                 window.open(url, undefined, optiontext);
             }
             else {
                 const childWindow = window.open(url, option.name, optiontext);
-                this.#childWindow = JUtil.empty(this.#childWindow)
+                this.#childWindow = Util.empty(this.#childWindow)
                     ? { [option.name]: childWindow }
                     : {
                         ...this.#childWindow,
@@ -560,7 +421,7 @@ export default class Common {
                 C: /[\d\.]/
             };
             if (!regex[target.dataset['euType'] ?? 'A'].test(ev.data) &&
-                !JUtil.empty(target.selectionStart)) {
+                !Util.empty(target.selectionStart)) {
                 target.selectionStart -= 1;
             }
         }
@@ -597,19 +458,19 @@ export default class Common {
             selection = target.selectionStart - [...target.value.matchAll(/,/g)].length;
             target.value = value[0];
             decimal = value.filter((el, i, arr) => i > 0).join('').substring(0, parseInt(target.dataset['euDecimal'] ?? '0'));
-            decimal = `${!JUtil.empty(decimal) ? '.' : ''}${decimal}`;
+            decimal = `${!Util.empty(decimal) ? '.' : ''}${decimal}`;
         }
         target.value = target.value.replace(regex[type], '');
         if (type == 'C') {
-            if (!JUtil.empty(target.value) ||
-                !JUtil.empty(decimal)) {
+            if (!Util.empty(target.value) ||
+                !Util.empty(decimal)) {
                 const num = parseInt(target.value || '0');
-                target.value = `${JUtil.numberFormat(num)}${decimal}`;
+                target.value = `${Util.numberFormat(num)}${decimal}`;
                 selection += [...target.value.matchAll(/,/g)].length;
             }
         }
-        if (JUtil.isNumber(min) ||
-            JUtil.isNumber(max)) {
+        if (Util.isNumber(min) ||
+            Util.isNumber(max)) {
             let flag = false, value, num;
             if (type == 'C') {
                 value = Number(target.value.replace(/,/g, ''));
@@ -618,15 +479,15 @@ export default class Common {
                 value = Number(target.value);
             }
             if (!flag &&
-                JUtil.isNumber(min)) {
-                if (JUtil.empty(target.value) ||
+                Util.isNumber(min)) {
+                if (Util.empty(target.value) ||
                     value < Number(min)) {
                     num = Number(min);
                     flag = true;
                 }
             }
             if (!flag &&
-                JUtil.isNumber(max) &&
+                Util.isNumber(max) &&
                 value > Number(max)) {
                 num = Number(max);
                 flag = true;
@@ -634,7 +495,7 @@ export default class Common {
             if (flag) {
                 let _value;
                 if (type == 'C') {
-                    _value = JUtil.numberFormat(num, parseInt(target.dataset['euDecimal'] ?? '0'));
+                    _value = Util.numberFormat(num, parseInt(target.dataset['euDecimal'] ?? '0'));
                 }
                 else {
                     _value = `${num}`;
@@ -643,7 +504,7 @@ export default class Common {
                 target.value = _value;
             }
         }
-        if (!JUtil.empty(target.selectionEnd)) {
+        if (!Util.empty(target.selectionEnd)) {
             target.selectionEnd = selection;
         }
     }

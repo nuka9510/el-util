@@ -37,46 +37,6 @@ export interface action {
   'stop-propagation'?: actionCallback[];
   /**
    * ```
-   * <button type="submit" data-eu-action="get" data-eu-url="[ string ]" data-eu-validation="[ 'Y' | 'N' ]" data-eu-event="[ string ]"> submit </button>
-   * ```
-   * 
-   * ## attribute
-   * #### data-eu-url
-   * - link
-   * #### data-eu-validation - `optional`
-   * - validation check 구분
-   * - default: `'Y'`
-   * #### data-eu-event
-   * - 이벤트
-   * - separator: `' '`
-   */
-  'get'?: actionCallback[];
-  /**
-   * ```
-   * <button type="submit" data-eu-action="post" data-eu-url="[ string ]" data-eu-state="[ 'reg' | 'mod' | 'del' ]" data-eu-validation="[ 'Y' | 'N' ]" data-eu-msg="[ string ]" data-eu-event="[ string ]"> submit </button>
-   * ```
-   * 
-   * ## attribute
-   * #### data-eu-url
-   * - link
-   * #### data-eu-state - `optional`
-   * - post type
-   * #### data-eu-validation - `optional`
-   * - validation check 구분
-   * - default:
-   * - - data-eu-state="del":
-   * - - - `'N'`
-   * - - otherwise:
-   * - - - `'Y'`
-   * #### data-eu-msg - `optional`
-   * - confirm msg
-   * #### data-eu-event
-   * - 이벤트
-   * - separator: `' '`
-   */
-  'post'?: actionCallback[];
-  /**
-   * ```
    * <select data-eu-action="sub-select" data-eu-target="[ string ]">
    *    <option value="a">A</option>
    *    <option value="b">B</option>
@@ -185,12 +145,6 @@ export interface action {
 export interface allAction {
   action: action;
   windowAction: actionCallback[];
-}
-
-export interface submitMsg {
-  reg: '등록하시겠습니까?';
-  mod: '수정하시겠습니까?';
-  del: '삭제하시겠습니까?';
 }
 
 export interface NumberOnlyElement extends HTMLInputElement {

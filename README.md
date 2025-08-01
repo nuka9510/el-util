@@ -32,46 +32,113 @@
 
 [top-language]: https://img.shields.io/github/languages/top/nuka9510/el-util
 
-## Usage
-### js (> 1.1.2)
-#### cdn
-```
-<script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/index.min.js"> </script>
-  OR
-<script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util@latest/dist/index.min.js"> </script>
-  OR
-<script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util@<specific-version>/dist/index.min.js"> </script>
-```
-### mjs
+## Install
 ```
 npm i @nuka9510/el-util
 ```
 ```
+<script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/js/index.min.js"> </script>
+```
+```
+<script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util@latest/dist/js/index.min.js"> </script>
+```
+```
+<script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util@<specific-version>/dist/js/index.min.js"> </script>
+```
+```
 <script type="importmap">
   {
-    "imports": {
-      "@nuka9510/js-util": "<path>/node_modules/@nuka9510/js-util/dist/index.mjs",
-      "@nuka9510/simple-validation": "<path>/node_modules/@nuka9510/simple-validation/dist/index.mjs",
-      "@nuka9510/simple-enum": "<path>/node_modules/@nuka9510/simple-enum/dist/index.mjs",
-      "@nuka9510/el-util": "<path>/node_modules/@nuka9510/el-util/dist/index.mjs"
-        OR
-      "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util/dist/index.mjs",
-      "@nuka9510/simple-validation": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-validation/dist/index.mjs",
-      "@nuka9510/simple-enum": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-enum/dist/index.mjs",
-      "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/index.mjs"
-        OR
-      "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util@latest/dist/index.mjs",
-      "@nuka9510/simple-validation": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-validation@latest/dist/index.mjs",
-      "@nuka9510/simple-enum": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-enum@latest/dist/index.mjs",
-      "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util@latest/dist/index.mjs"
-        OR
-      "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util@<specific-version>/dist/index.mjs",
-      "@nuka9510/simple-validation": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-validation@<specific-version>/dist/index.mjs",
-      "@nuka9510/simple-enum": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-enum@<specific-version>/dist/index.mjs",
-      "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util@<specific-version>/dist/index.mjs"
-    }
+    "imports": { "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/esm/index.min.mjs" }
   }
 </script>
+```
+```
+<script type="importmap">
+  {
+    "imports": { "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util@latest/dist/esm/index.min.mjs" }
+  }
+</script>
+```
+```
+<script type="importmap">
+  {
+    "imports": { "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util@<specific-version>/dist/esm/index.min.mjs" }
+  }
+</script>
+```
+## Usage
+### js (> 1.1.2)
+```
+class Index extends elUtil.Common {
+  get action() {
+    return {
+      'test-click': [
+        { event: 'click', callback: this.onTestClick }
+      ]
+    };
+  }
+
+  constructor() {
+    super();
+    
+    this.init();
+  }
+
+  onTestClick(ev, target) { console.debug(ev, target); }
+
+}
+
+new Index();
+```
+### mjs
+```
+import { Common } from "@nuka9510/el-util";
+
+class Index extends Common {
+  get action() {
+    return {
+      'test-click': [
+        { event: 'click', callback: this.onTestClick }
+      ]
+    };
+  }
+
+  constructor() {
+    super();
+    
+    this.init();
+  }
+
+  onTestClick(ev, target) { console.debug(ev, target); }
+
+}
+
+new Index();
+```
+### cjs (> 1.4.0)
+```
+const elUtil = require('@nuka9510/el-util');
+
+class Index extends elUtil.Common {
+  get action() {
+    return {
+      'test-click': [
+        { event: 'click', callback: this.onTestClick }
+      ]
+    };
+  }
+
+  constructor() {
+    super();
+    
+    this.init();
+  }
+
+  onTestClick(ev, target) { console.debug(ev, target); }
+
+}
+
+new Index();
 ```
 ### example
 ```
@@ -83,9 +150,9 @@ example
 ```
 - `js/index.mjs`
 ```
-import { EUCommon, EUInterceptor } from "@nuka9510/el-util";
+import { Common, Interceptor } from "@nuka9510/el-util";
 
-class Index extends EUCommon {
+class Index extends Common {
   get action() {
     return {
       'test-click': [
@@ -97,7 +164,7 @@ class Index extends EUCommon {
   constructor() {
     super();
 
-    EUInterceptor.appendInterceptor({
+    Interceptor.appendInterceptor({
       preHandle: (ev, target) => {
         console.debug(ev, target);
         alert('preHandle');
@@ -107,10 +174,7 @@ class Index extends EUCommon {
     this.init();
   }
 
-  onTestClick(ev, target) {
-    console.debug(ev, target);
-    alert('test');
-  }
+  onTestClick(ev, target) { console.debug(ev, target); }
 
 }
 
@@ -133,12 +197,7 @@ new Index();
 </body>
 <script type="importmap">
   {
-    "imports": {
-      "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util/dist/index.mjs",
-      "@nuka9510/simple-validation": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-validation/dist/index.mjs",
-      "@nuka9510/simple-enum": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-enum/dist/index.mjs",
-      "@nuka9510/el-util": "/dist/index.mjs"
-    }
+    "imports": { "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/esm/index.min.mjs" }
   }
 </script>
 <script src="../js/index.mjs" type="module"></script>

@@ -1,14 +1,8 @@
 import { action, actionCallback, allAction, ChildCloseEvent, ChildCloseEventOption } from "../@types/common.js";
-import { config } from "@nuka9510/simple-validation/@types/validation";
-import { SValidation } from "@nuka9510/simple-validation";
 export default class Common {
     #private;
     /** `init` 실행 여부 */
     get isInit(): boolean;
-    /** `submit` 이벤트를 전달할 `HTMLFormElement` 객체 */
-    form?: HTMLFormElement;
-    /** `validation` 확인을 위한 객체 */
-    validation: SValidation;
     /** `EventListener`에 할당 할 `data-eu-action`을 정의한 `action` */
     get action(): action;
     /** `window`객체의 `EventListener`에 할당 할 `actionCallback` */
@@ -17,38 +11,25 @@ export default class Common {
     get allAction(): allAction;
     /**
      * ```
-     * <button type="button" data-eu-action="test-click">test-click</button>
-     * <script type="importmap">
-     *   {
-     *     "imports": {
-     *       "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util/dist/index.js",
-     *       "@nuka9510/simple-validation": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-validation/dist/index.js",
-     *       "@nuka9510/simple-enum": "https://cdn.jsdelivr.net/npm/@nuka9510/simple-enum/dist/index.js",
-     *       "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/index.js"
-     *     }
-     *   }
-     * </script>
-     * <script type="module">
-     *   import { EUCommon } from "@nuka9510/el-util";
+     * import { Common } from "@nuka9510/el-util";
      *
-     *   class Index extends EUCommon {
-     *     get action() {
-     *       return {
-     *         'test-click': [
-     *           { event: 'click', callback: this.onTestClick }
-     *         ]
-     *       };
-     *     }
-     *
-     *     onTestClick(ev) { alert('test'); }
-     *
+     * class Index extends Common {
+     *   get action() {
+     *     return {
+     *       'test-click': [
+     *         { event: 'click', callback: this.onTestClick }
+     *       ]
+     *     };
      *   }
      *
-     *   new Index();
-     * </script>
+     *   onTestClick(ev) { alert('test'); }
+     *
+     * }
+     *
+     * new Index();
      * ```
      */
-    constructor(config?: config);
+    constructor();
     /** `Common`객체 초기화. */
     init(): void;
     /**
@@ -61,14 +42,6 @@ export default class Common {
     addEvent(): void;
     /** `Common`객체의 `action`에 정의한 이벤트를 `removeEventListener`에 적용할 시 실행할 `callback`. */
     removeEvent(): void;
-    /** `data-eu-action="get"`의 이벤트가 실행 되기 전에 실행 한다. */
-    onGetBefore(ev: Event, target: HTMLElement): Promise<boolean | void>;
-    /** `data-eu-action="get"`의 이벤트가 실행 된 후에 실행 한다. */
-    onGetAfter(ev: Event, target: HTMLElement): Promise<void>;
-    /** `data-eu-action="post"`의 이벤트가 실행 되기 전에 실행 한다. */
-    onPostBefore(ev: Event, target: HTMLElement): Promise<boolean | void>;
-    /** `data-eu-action="post"`의 이벤트가 실행 된 후에 실행 한다. */
-    onPostAfter(ev: Event, target: HTMLElement): Promise<void>;
     /** `data-eu-action="sub-select"`의 이벤트가 실행 된 후에 실행 한다. */
     onSubSelectAfter(ev: Event, target: HTMLSelectElement): Promise<void>;
     /** `data-eu-action="check-all"`의 이벤트가 실행 된 후에 실행 한다. */
