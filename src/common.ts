@@ -1,5 +1,5 @@
-import { action, actionCallback, allAction, ChildCloseEvent, ChildCloseEventOption, childWindow, NumberOnlyElement } from "../@types/common.js";
-import { plugin } from "../@types/plugin.js";
+import { action, actionCallback, allAction, ChildCloseEvent, ChildCloseEventOption, childWindow, NumberOnlyElement } from "../@types/common";
+import { plugin } from "../@types/plugin";
 import { Util } from "@nuka9510/js-util";
 import Plugin from "./plugin.js";
 import Interceptor from "./interceptor.js";

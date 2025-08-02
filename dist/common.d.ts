@@ -1,4 +1,4 @@
-import { action, actionCallback, allAction, ChildCloseEvent, ChildCloseEventOption } from "../@types/common.js";
+import { action, actionCallback, allAction, ChildCloseEvent, ChildCloseEventOption } from "../@types/common";
 export default class Common {
     #private;
     /** `init` 실행 여부 */
