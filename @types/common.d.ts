@@ -26,17 +26,6 @@ export interface action {
   'prevent-default'?: actionCallback[];
   /**
    * ```
-   * <button type="button" data-eu-action="stop-propagation" data-eu-event="[ string ]"> 버튼 </button>
-   * ```
-   * 
-   * ### attribute
-   * #### data-eu-event
-   * - 이벤트
-   * - separator: `' '`
-   */
-  'stop-propagation'?: actionCallback[];
-  /**
-   * ```
    * <select data-eu-action="sub-select" data-eu-target="[ string ]">
    *    <option value="a">A</option>
    *    <option value="b">B</option>

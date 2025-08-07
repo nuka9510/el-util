@@ -27,14 +27,11 @@ class Common {
             'prevent-default': [
                 { callback: this.#onPreventDefault }
             ],
-            'stop-propagation': [
-                { callback: this.#onStopPropagation }
-            ],
             'sub-select': [
                 { event: 'change', callback: this.#onSubSelect }
             ],
             'check-all': [
-                { event: 'click', callback: this.#onCheckAll, option: { capture: true } }
+                { event: 'click', callback: this.#onCheckAll }
             ],
             'win-open': [
                 { event: 'click', callback: this.#onWinOpen }
@@ -45,7 +42,7 @@ class Common {
             'number-only': [
                 { event: 'keydown', callback: this.#onNumberOnlyKeydown },
                 { event: 'input', callback: this.#onNumberOnlyInput },
-                { event: 'blur', callback: this.#onNumberOnlyBlur }
+                { event: 'blur', callback: this.#onNumberOnlyBlur, option: { capture: true } }
             ],
             'clipboard': [
                 { event: 'click', callback: this.#onClipboard }
@@ -65,7 +62,7 @@ class Common {
     get action() { return {}; }
     /** `window`객체의 `EventListener`에 할당 할 `actionCallback` */
     get windowAction() { return []; }
-    /** `EUCommon`에서 사용할 모든 `action` */
+    /** `Common`에서 사용할 모든 `action` */
     get allAction() {
         const plugin = _plugin_js__WEBPACK_IMPORTED_MODULE_1__["default"].plugin.filter((...arg) => _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(arg[0].target) ||
             arg[0].target.includes(this)), action = {
@@ -274,17 +271,6 @@ class Common {
      * - separator: `' '`
      */
     #onPreventDefault(ev, target) { ev.preventDefault(); }
-    /**
-     * ```
-     * <button type="button" data-eu-action="stop-propagation" data-eu-event="[ string ]"> 버튼 </button>
-     * ```
-     *
-     * ### attribute
-     * #### data-eu-event
-     * - 이벤트
-     * - separator: `' '`
-     */
-    #onStopPropagation(ev, target) { ev.stopPropagation(); }
     /** `data-eu-action="sub-select"`의 이벤트가 실행 된 후에 실행 한다. */
     async onSubSelectAfter(ev, target) { }
     /**
@@ -597,11 +583,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @nuka9510/js-util */ "./node_modules/@nuka9510/js-util/dist/esm/index.min.mjs");
 
 class Interceptor {
-    /** `EUCommon`에 사용할 `interceptor` 배열 객체 */
+    /** `Common`에 사용할 `interceptor` 배열 객체 */
     static #interceptor = [];
-    /** `EUCommon`에 사용할 `interceptor` 배열 객체 */
+    /** `Common`에 사용할 `interceptor` 배열 객체 */
     static get interceptor() { return _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.copy(Interceptor.#interceptor); }
-    /** `EUCommon`에 사용할 `interceptor`을 추가 한다.  */
+    /** `Common`에 사용할 `interceptor`을 추가 한다.  */
     static appendInterceptor(interceptor) { Interceptor.#interceptor.push(interceptor); }
     static actionHandle(callback, action, flag) {
         return async (ev) => {
@@ -647,11 +633,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @nuka9510/js-util */ "./node_modules/@nuka9510/js-util/dist/esm/index.min.mjs");
 
 class Plugin {
-    /** `EUCommon`에 사용할 `plugin` 배열 객체 */
+    /** `Common`에 사용할 `plugin` 배열 객체 */
     static #plugin = [];
-    /** `EUCommon`에 사용할 `plugin` 배열 객체 */
+    /** `Common`에 사용할 `plugin` 배열 객체 */
     static get plugin() { return _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.copy(Plugin.#plugin); }
-    /** `EUCommon`에 사용할 `plugin`을 추가 한다.  */
+    /** `Common`에 사용할 `plugin`을 추가 한다.  */
     static appendPlugin(plugin) { Plugin.#plugin.push(plugin); }
 }
 

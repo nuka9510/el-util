@@ -12,14 +12,11 @@ export default class Common {
             'prevent-default': [
                 { callback: this.#onPreventDefault }
             ],
-            'stop-propagation': [
-                { callback: this.#onStopPropagation }
-            ],
             'sub-select': [
                 { event: 'change', callback: this.#onSubSelect }
             ],
             'check-all': [
-                { event: 'click', callback: this.#onCheckAll, option: { capture: true } }
+                { event: 'click', callback: this.#onCheckAll }
             ],
             'win-open': [
                 { event: 'click', callback: this.#onWinOpen }
@@ -30,7 +27,7 @@ export default class Common {
             'number-only': [
                 { event: 'keydown', callback: this.#onNumberOnlyKeydown },
                 { event: 'input', callback: this.#onNumberOnlyInput },
-                { event: 'blur', callback: this.#onNumberOnlyBlur }
+                { event: 'blur', callback: this.#onNumberOnlyBlur, option: { capture: true } }
             ],
             'clipboard': [
                 { event: 'click', callback: this.#onClipboard }
@@ -50,7 +47,7 @@ export default class Common {
     get action() { return {}; }
     /** `window`객체의 `EventListener`에 할당 할 `actionCallback` */
     get windowAction() { return []; }
-    /** `EUCommon`에서 사용할 모든 `action` */
+    /** `Common`에서 사용할 모든 `action` */
     get allAction() {
         const plugin = Plugin.plugin.filter((...arg) => Util.empty(arg[0].target) ||
             arg[0].target.includes(this)), action = {
@@ -259,17 +256,6 @@ export default class Common {
      * - separator: `' '`
      */
     #onPreventDefault(ev, target) { ev.preventDefault(); }
-    /**
-     * ```
-     * <button type="button" data-eu-action="stop-propagation" data-eu-event="[ string ]"> 버튼 </button>
-     * ```
-     *
-     * ### attribute
-     * #### data-eu-event
-     * - 이벤트
-     * - separator: `' '`
-     */
-    #onStopPropagation(ev, target) { ev.stopPropagation(); }
     /** `data-eu-action="sub-select"`의 이벤트가 실행 된 후에 실행 한다. */
     async onSubSelectAfter(ev, target) { }
     /**

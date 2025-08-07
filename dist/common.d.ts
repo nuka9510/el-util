@@ -7,7 +7,7 @@ export default class Common {
     get action(): action;
     /** `window`객체의 `EventListener`에 할당 할 `actionCallback` */
     get windowAction(): actionCallback[];
-    /** `EUCommon`에서 사용할 모든 `action` */
+    /** `Common`에서 사용할 모든 `action` */
     get allAction(): allAction;
     /**
      * ```
