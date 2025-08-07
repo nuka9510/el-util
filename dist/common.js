@@ -10,7 +10,7 @@ export default class Common {
     get #action() {
         return {
             'prevent-default': [
-                { callback: this.#onPreventDefault }
+                { callback: this.#onPreventDefault, option: { capture: true } }
             ],
             'sub-select': [
                 { event: 'change', callback: this.#onSubSelect }
