@@ -162,12 +162,12 @@ class Common {
             updateEvent();
         };
         this.init = () => {
-            init();
             this.#initAction();
             this.#addEvent();
+            init();
             this.init = () => {
-                init();
                 this.updateEvent();
+                init();
             };
             this.#isInit = true;
         };
