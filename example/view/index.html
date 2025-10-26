@@ -10,10 +10,19 @@
   <button type="button" data-eu-action="test-click">
     <span> test-click </span>
   </button>
+  <div style="display: flex;">
+    <input type="checkbox" data-eu-action="check-all" data-eu-target="test">
+    <input type="checkbox" data-eu-name="test">
+    <input type="checkbox" data-eu-name="test">
+  </div>
 </body>
 <script type="importmap">
   {
-    "imports": { "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/esm/index.min.mjs" }
+    "imports": {
+      "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util/dist/esm/index.min.mjs",
+      "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/esm/index.min.mjs",
+      "@nuka9510/el-util/plugin": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/esm/plugin/index.min.mjs"
+    }
   }
 </script>
 <script src="../js/index.mjs" type="module"></script>

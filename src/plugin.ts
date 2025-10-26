@@ -9,8 +9,12 @@ export default class Plugin {
   static get plugin(): plugin[] { return Util.copy(Plugin.#plugin); }
 
   /** `Common`에 사용할 `plugin`을 추가 한다.  */
-  static appendPlugin(
-    plugin: plugin
-  ): void { Plugin.#plugin.push(plugin); }
+  static append(
+    plugin: plugin | plugin[]
+  ): void {
+    if (Array.isArray(plugin)) {
+      Plugin.#plugin.push(...plugin);
+    } else { Plugin.#plugin.push(plugin); }
+  }
 
 }

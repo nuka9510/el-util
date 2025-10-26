@@ -38,36 +38,48 @@ npm i @nuka9510/el-util
 ```
 ```
 <script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/js/index.min.js"> </script>
+<script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/js/plugin/index.min.js"> </script>
 ```
 ```
 <script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util@latest/dist/js/index.min.js"> </script>
+<script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util@latest/dist/js/plugin/index.min.js"> </script>
 ```
 ```
 <script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util@<specific-version>/dist/js/index.min.js"> </script>
+<script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util@<specific-version>/dist/js/plugin/index.min.js"> </script>
 ```
 ```
 <script type="importmap">
   {
-    "imports": { "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/esm/index.min.mjs" }
+    "imports": {
+      "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/esm/index.min.mjs",
+      "@nuka9510/el-util/plugin": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/esm/plugin/index.min.mjs"
+    }
   }
 </script>
 ```
 ```
 <script type="importmap">
   {
-    "imports": { "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util@latest/dist/esm/index.min.mjs" }
+    "imports": {
+      "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util@latest/dist/esm/index.min.mjs",
+      "@nuka9510/el-util/plugin": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util@latest/dist/esm/plugin/index.min.mjs"
+    }
   }
 </script>
 ```
 ```
 <script type="importmap">
   {
-    "imports": { "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util@<specific-version>/dist/esm/index.min.mjs" }
+    "imports": {
+      "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util@<specific-version>/dist/esm/index.min.mjs",
+      "@nuka9510/el-util/plugin": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util@<specific-version>/dist/esm/plugin/index.min.mjs"
+    }
   }
 </script>
 ```
 ## Usage
-### js (> 1.1.2)
+### js
 ```
 class Index extends elUtil.Common {
   get action() {
@@ -84,7 +96,7 @@ class Index extends elUtil.Common {
     this.init();
   }
 
-  onTestClick(ev, target) { console.debug(ev, target); }
+  onTestClick(ev, target, common) { console.debug(ev, target, common); }
 
 }
 
@@ -109,13 +121,13 @@ class Index extends Common {
     this.init();
   }
 
-  onTestClick(ev, target) { console.debug(ev, target); }
+  onTestClick(ev, target, common) { console.debug(ev, target, common); }
 
 }
 
 new Index();
 ```
-### cjs (> 1.4.0)
+### cjs
 ```
 const elUtil = require('@nuka9510/el-util');
 
@@ -134,7 +146,7 @@ class Index extends elUtil.Common {
     this.init();
   }
 
-  onTestClick(ev, target) { console.debug(ev, target); }
+  onTestClick(ev, target, common) { console.debug(ev, target, common); }
 
 }
 
@@ -150,7 +162,8 @@ example
 ```
 - `js/index.mjs`
 ```
-import { Common, Interceptor } from "@nuka9510/el-util";
+import { Common, Interceptor, Plugin } from "@nuka9510/el-util";
+import { UtilAction } from "@nuka9510/el-util/plugin";
 
 class Index extends Common {
   get action() {
@@ -164,9 +177,12 @@ class Index extends Common {
   constructor() {
     super();
 
-    Interceptor.appendInterceptor({
-      preHandle: (ev, target) => {
-        console.debug(ev, target);
+    Plugin.append(UtilAction.plugin(this));
+
+    Interceptor.append({
+      preHandle: (ev, target, common) => {
+        console.debug(ev, target, common);
+
         alert('preHandle');
       }
     });
@@ -174,7 +190,7 @@ class Index extends Common {
     this.init();
   }
 
-  onTestClick(ev, target) { console.debug(ev, target); }
+  onTestClick(ev, target, common) { console.debug(ev, target, common); }
 
 }
 
@@ -194,10 +210,19 @@ new Index();
   <button type="button" data-eu-action="test-click">
     <span> test-click </span>
   </button>
+  <div style="display: flex;">
+    <input type="checkbox" data-eu-action="check-all" data-eu-target="test">
+    <input type="checkbox" data-eu-name="test">
+    <input type="checkbox" data-eu-name="test">
+  </div>
 </body>
 <script type="importmap">
   {
-    "imports": { "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/esm/index.min.mjs" }
+    "imports": {
+      "@nuka9510/js-util": "https://cdn.jsdelivr.net/npm/@nuka9510/js-util/dist/esm/index.min.mjs",
+      "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/esm/index.min.mjs",
+      "@nuka9510/el-util/plugin": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/esm/plugin/index.min.mjs"
+    }
   }
 </script>
 <script src="../js/index.mjs" type="module"></script>

@@ -1,152 +1,29 @@
-export interface childWindow {
-  [windowName: string]: Window | null;
-}
+import { Common } from "../src/index.js";
 
-export interface actionCallback {
+export interface actionItem {
+  /**
+   * `EventListener`에 적용할 `event`  \
+   * 지정되지 않았을 경우 `data-eu-event`의 값 사용
+   */
   event?: string | string[];
-  callback: (
-    ev: Event,
-    target?: EventTarget | HTMLElement
+  /** `EventListener`에 적용할 `callback` */
+  callback: <T, U> (
+    ev: T,
+    target: U,
+    common: Common
   ) => void | Promise<void>;
+  /** `EventListener`에 적용할 `option` */
   option?: EventListenerOptions;
+  /** 지정되지 않았을 경우 `data-eu-event` `attribute`를 사용하여 `event`를 지정했는지 여부 */
   flag?: boolean;
+  listener?: (ev: Event) => Promise<void>;
 }
 
 export interface action {
-  /**
-   * ```
-   * <input type="radio" data-eu-action="prevent-default" data-eu-event="[ string ]">
-   * ```
-   * 
-   * ### attribute
-   * #### data-eu-event
-   * - 이벤트
-   * - separator: `' '`
-   */
-  'prevent-default'?: actionCallback[];
-  /**
-   * ```
-   * <select data-eu-action="sub-select" data-eu-target="[ string ]">
-   *    <option value="a">A</option>
-   *    <option value="b">B</option>
-   * </select>
-   * <select data-eu-name="[ string ]">
-   *    <option style="display: none" data-eu-main="[ string ]" value="1">1</option>
-   *    <option style="display: none" data-eu-main="[ string ]" value="2">2</option>
-   *    <option style="display: none" data-eu-main="[ string ]" value="3">3</option>
-   *    <option style="display: none" data-eu-main="[ string ]" value="4">4</option>
-   *    <option style="display: none" data-eu-main="[ string ]" value="5">5</option>
-   *    <option style="display: none" data-eu-main="[ string ]" value="6">6</option>
-   * </select>
-   * ```
-   * 
-   * ### attribute
-   * #### data-eu-target
-   * - target `data-eu-name`
-   * #### data-eu-name
-   * #### data-eu-main
-   * - main `optionElement` `value`
-   */
-  'sub-select'?: actionCallback[];
-  /**
-   * ```
-   * <input type="checkbox" data-eu-action="check-all" data-eu-target="[ string ]">
-   * <input type="checkbox" data-eu-name="[ string ]">
-   * <input type="checkbox" data-eu-name="[ string ]">
-   * ```
-   * 
-   * ### attribute
-   * #### data-eu-target
-   * - target `data-eu-name`
-   * #### data-eu-name
-   */
-  'check-all'?: actionCallback[];
-  /**
-   * ```
-   * <button type="button" data-eu-action="win-open" data-eu-option="[ string ]" data-eu-url="[ string ]" data-eu-form="[ form ]"> 버튼 </button>
-   * <script type="application/json" data-eu-name="win-open" data-eu-id="[ string ]">
-   *   {"name": "[window-name]", "pos": "center", "width": 1700, "height": 800, "scrollbars": "yes", "resizable": "yes"}
-   * </script>
-   * ```
-   * 
-   * ### attribute
-   * #### data-eu-option
-   * - target `data-eu-id`
-   * #### data-eu-url
-   * - link
-   * #### data-eu-id
-   */
-  'win-open'?: actionCallback[];
-  /**
-   * ```
-   * <button type="button" data-eu-action="win-close"> 버튼 </button>
-   * ```
-   */
-  'win-close'?: actionCallback[];
-  /**
-   * ```
-   * <input type="text" data-eu-action="number-only" data-eu-type="[ 'A' | 'B' | 'C' ]" data-eu-min="[ number ]" data-eu-max="[ number ]" data-eu-decimal="[ number ]">
-   * ```
-   * 
-   * ### attribute
-   * #### data-eu-type
-   * - `A`: 숫자만 허용
-   * - `B`: 소숫점 및 음수 허용
-   * - `C`: #,###.# 형식으로 변환
-   * #### data-eu-min - `optional`
-   * - 최소값
-   * #### data-eu-max - `optional`
-   * - 최대값
-   * #### data-eu-decimal - `optional`
-   * - 소숫점 아래 자리 수
-   * - #defalut: `0`
-   */
-  'number-only'?: actionCallback[];
-  /**
-   * ```
-   * <button type="button" data-eu-action="clipboard" data-eu-value="[ string ]">복사</button>
-   * ```
-   * 
-   * ### attribute
-   * #### data-eu-value
-   * - 복사할 문자열
-   */
-  'clipboard'?: actionCallback[];
-  /**
-   * ```
-   * <input type="checkbox" data-eu-action="check" data-eu-target="[ string ]">
-   * <input type="hidden" value="[ string ]" data-eu-name="[ string ]" data-eu-true="[ string ]" data-eu-false="[ string ]">
-   * ```
-   * 
-   * ### attribute
-   * #### data-eu-target
-   * - target `data-eu-name`
-   * #### data-eu-name
-   * #### data-eu-true
-   * - `true` 일 경우 `value`
-   * #### data-eu-false
-   * - `false` 일 경우 `value`
-   */
-  'check'?: actionCallback[];
-  [data_eu_action: string]: actionCallback[];
+  [data_eu_action: string]: actionItem[];
 }
 
 export interface allAction {
   action: action;
-  windowAction: actionCallback[];
+  windowAction: actionItem[];
 }
-
-export interface NumberOnlyElement extends HTMLInputElement {
-  event_key_code?: KeyboardEvent['keyCode'];
-  prev_value?: string;
-  prev_selection?: number;
-}
-
-export interface ChildCloseEventDetail {
-  reload?: boolean;
-  callback?: string;
-}
-
-export type ChildCloseEvent = CustomEvent<ChildCloseEventDetail>;
-
-export type ChildCloseEventOption = CustomEventInit<ChildCloseEventDetail>;

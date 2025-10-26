@@ -9,6 +9,11 @@
       "import": "./dist/esm/index.min.mjs",
       "require": "./dist/cjs/index.min.cjs"
     },
+    "./plugin": {
+      "types": "./dist/plugin/index.d.ts",
+      "import": "./dist/esm/plugin/index.min.mjs",
+      "require": "./dist/cjs/plugin/index.min.cjs"
+    },
     "./@types/common": {
       "types": "./@types/common.d.ts"
     },
@@ -17,6 +22,9 @@
     },
     "./@types/plugin": {
       "types": "./@types/plugin.d.ts"
+    },
+    "./@types/plugin/util_action": {
+      "types": "./@types/plugin/util_action.d.ts"
     }
   },
   "files": [
@@ -58,6 +66,6 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
-    "@nuka9510/js-util": "^1.2.4"
+    "@nuka9510/js-util": "^1.2.5"
   }
 }

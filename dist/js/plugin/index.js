@@ -1,317 +1,242 @@
+var elUtilPlugin;
 /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./dist/common.js":
-/*!************************!*\
-  !*** ./dist/common.js ***!
-  \************************/
+/***/ "./dist/plugin/util_action.js":
+/*!************************************!*\
+  !*** ./dist/plugin/util_action.js ***!
+  \************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ Common)
+/* harmony export */   "default": () => (/* binding */ UtilAction)
 /* harmony export */ });
 /* harmony import */ var _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @nuka9510/js-util */ "./node_modules/@nuka9510/js-util/dist/esm/index.min.mjs");
-/* harmony import */ var _plugin_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./plugin.js */ "./dist/plugin.js");
-/* harmony import */ var _interceptor_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./interceptor.js */ "./dist/interceptor.js");
 
-
-
-class Common {
-    #isInit = false;
-    #action;
-    #windowAction;
-    /** `init` 실행 여부 */
-    get isInit() { return this.#isInit; }
-    /** `EventListener`에 할당 할 `data-eu-action`을 정의한 `action` */
-    get action() { return {}; }
-    /** `window`객체의 `EventListener`에 할당 할 `actionCallback` */
-    get windowAction() { return []; }
-    /** `Common`에서 사용할 모든 `action` */
-    get allAction() {
-        const plugin = _plugin_js__WEBPACK_IMPORTED_MODULE_1__["default"].plugin.filter((...arg) => _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(arg[0].common) ||
-            arg[0].common.includes(this)), action = {
-            ...plugin.reduce((...arg) => {
-                return {
-                    ...arg[0],
-                    ...arg[1]?.action
-                };
-            }, {}),
-            ...this.action
-        }, windowAction = [
-            ...plugin.reduce((...arg) => {
-                return [
-                    ...arg[0],
-                    ...arg[1].windowAction
-                ];
-            }, []),
-            ...this.windowAction
-        ];
-        let _action = {};
-        for (const key in action) {
-            for (const value of action[key].values()) {
-                if (_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(value.event)) {
-                    _action[key] = [
-                        ...(_action[key] ?? []),
-                        value
-                    ];
-                }
-            }
+class UtilAction {
+    static plugin(common) {
+        let target;
+        if (Array.isArray(common)) {
+            target = common;
         }
-        const keys = Object.keys(_action);
-        if (!_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(keys)) {
-            document.querySelectorAll(`[data-eu-action~="${keys.join('"], [data-eu-action~="')}"]`)
-                .forEach((...arg) => {
-                if (!arg[0].hasAttribute('data-eu-event')) {
-                    return;
-                }
-                const event = arg[0].getAttribute('data-eu-event')
-                    .split(' ');
-                arg[0].getAttribute('data-eu-action')
-                    .split(' ')
-                    .filter((..._arg) => keys.includes(_arg[0]))
-                    .forEach((..._arg) => {
-                    _action[_arg[0]].forEach((...__arg) => {
-                        _action[_arg[0]][__arg[1]] = {
-                            ...__arg[0],
-                            event: [
-                                ...(__arg[0].event ?? []),
-                                ...event.filter((...___arg) => !(__arg[0].event ?? []).includes(___arg[0]))
-                            ],
-                            flag: true
-                        };
-                    });
-                });
-            });
-            for (const key in _action) {
-                action[key] = [
-                    ...action[key].filter((...arg) => !_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(arg[0].event)),
-                    ..._action[key]
-                ];
+        else {
+            if (!_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(common)) {
+                target = [common];
             }
         }
         return {
-            action: action,
-            windowAction: windowAction
+            common: target,
+            action: {
+                'sub-select': [
+                    { event: 'change', callback: UtilAction.#onSubSelect }
+                ],
+                'check-all': [
+                    { event: 'click', callback: UtilAction.#onCheckAll }
+                ],
+                'win-open': [
+                    { event: 'click', callback: UtilAction.#onWinOpen }
+                ],
+                'win-close': [
+                    { event: 'click', callback: UtilAction.#onWinClose }
+                ],
+                'number-only': [
+                    { event: 'keydown', callback: UtilAction.#onNumberOnlyKeydown },
+                    { event: 'input', callback: UtilAction.#onNumberOnlyInput },
+                    { event: 'blur', callback: UtilAction.#onNumberOnlyBlur, option: { capture: true } }
+                ],
+                'clipboard': [
+                    { event: 'click', callback: UtilAction.#onClipboard }
+                ],
+                'check': [
+                    { event: 'click', callback: UtilAction.#onCheck }
+                ]
+            },
+            windowAction: [
+                { event: 'child-close', callback: UtilAction.#onChildClose }
+            ]
         };
     }
-    /**
-     * ```
-     * import { Common } from "@nuka9510/el-util";
-     *
-     * class Index extends Common {
-     *   get action() {
-     *     return {
-     *       'test-click': [
-     *         { event: 'click', callback: this.onTestClick }
-     *       ]
-     *     };
-     *   }
-     *
-     *   onTestClick(ev) { alert('test'); }
-     *
-     * }
-     *
-     * new Index();
-     * ```
-     */
-    constructor() {
-        const updateEvent = this.updateEvent.bind(this), init = this.init.bind(this);
-        this.updateEvent = () => {
-            this.#updateEvent();
-            updateEvent();
-        };
-        this.init = () => {
-            this.#initAction();
-            this.#addEvent();
-            init();
-            this.init = () => {
-                this.updateEvent();
-                init();
+    static #onSubSelect(ev, target, common) {
+        const subNode = document.querySelectorAll(`select[data-eu-name="${target.dataset['euTarget']}"]`);
+        subNode.forEach(async (...arg) => {
+            arg[0].querySelectorAll('option')
+                .forEach((..._arg) => {
+                if (!_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(_arg[0].value)) {
+                    _arg[0].style.setProperty('display', (target.value == _arg[0].dataset['euMain']) ? 'block' : 'none');
+                }
+            });
+            arg[0].value = '';
+            arg[0].dispatchEvent(new Event('change', { bubbles: true }));
+        });
+    }
+    static #onCheckAll(ev, target, common) {
+        document.querySelectorAll(`input[type="checkbox"][data-eu-name="${target.dataset['euTarget']}"]`)
+            .forEach((...arg) => { arg[0].checked = target.checked; });
+    }
+    static #onWinOpen(ev, target, common) {
+        if (!_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(target.dataset['euOption'])) {
+            const url = /^https?:/.test(target.dataset['euUrl']) ? new URL(target.dataset['euUrl']) : new URL(target.dataset['euUrl'], location.origin), option = JSON.parse(document.querySelector(`script[data-eu-name="win-open"][data-eu-id="${target.dataset['euOption']}"]`)?.innerText ?? '{}');
+            if (!_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(target.dataset['euForm'])) {
+                const form = document.querySelector(`form${target.dataset['euForm']}`), searchParam = new URLSearchParams(new FormData(form));
+                url.search = `${url.search || '?'}${url.search && '&'}${searchParam}`;
+            }
+            let optiontext = '';
+            switch (option?.pos) {
+                case 'center':
+                    option.top = (screen.height - option.height) / 2;
+                    option.left = (screen.width - option.width) / 2;
+                    break;
+            }
+            for (const key in option) {
+                if (!['name', 'pos'].includes(key)) {
+                    if (!_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(optiontext)) {
+                        optiontext += ', ';
+                    }
+                    optiontext += `${key}=${option[key]}`;
+                }
+            }
+            if (_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(option.name)) {
+                window.open(url, undefined, optiontext);
+            }
+            else {
+                const childWindow = window.open(url, option.name, optiontext), childWindow_ = Object.getOwnPropertyDescriptor(common, 'childWindow');
+                Object.defineProperty(common, 'childWindow', {
+                    ...childWindow_,
+                    value: {
+                        ...(childWindow_.value ?? {}),
+                        [option.name]: childWindow
+                    },
+                    configurable: true
+                });
+            }
+        }
+    }
+    static #onWinClose(ev, target, common) { window.close(); }
+    static #onNumberOnlyKeydown(ev, target, common) {
+        /** 한글 입력시 input 이벤트가 여러번 발생하는 현상 보정을 위한 로직 */
+        if (ev.keyCode == 229) {
+            target.event_key_code = ev.keyCode;
+            target.prev_value = target.value;
+            target.prev_selection = target.selectionStart;
+        }
+        else {
+            delete target.event_key_code;
+            delete target.prev_value;
+            delete target.prev_selection;
+        }
+    }
+    static #onNumberOnlyInput(ev, target, common) {
+        /** 한글 입력시 input 이벤트가 여러번 발생하는 현상 보정을 위한 로직 */
+        if (target.event_key_code == 229) {
+            if (!ev.isComposing) {
+                target.value = target.prev_value;
+                target.selectionStart = target.prev_selection;
+            }
+            else {
+                delete target.event_key_code;
+                delete target.prev_value;
+                delete target.prev_selection;
+            }
+        }
+        if (ev.data != null) {
+            const regex = {
+                A: /[\d]/,
+                B: /[\d\.\-]/,
+                C: /[\d\.]/
             };
-            this.#isInit = true;
-        };
-    }
-    /** `Common`객체 초기화. */
-    init() { }
-    #initAction() {
-        const interceptor = _interceptor_js__WEBPACK_IMPORTED_MODULE_2__["default"].interceptor, allAction = this.allAction;
-        this.#action = allAction.action;
-        this.#windowAction = allAction.windowAction;
-        for (const action in this.#action) {
-            this.#action[action].forEach((...arg) => { arg[0].listener = Common.#actionHandle(this, interceptor, arg[0].callback.bind(this), action, arg[0].flag).bind(this); });
-        }
-        this.#windowAction.forEach((...arg) => { arg[0].listener = Common.#actionHandle(this, interceptor, arg[0].callback.bind(this)).bind(this); });
-    }
-    /**
-     * `Common`객체의 `action`에 정의한 이벤트들의 `eventListener`를 갱신한다.
-     * `removeEventListener` -> `addEventListener`
-     * `eventListener`를 갱신 후 실행할 `callback` 정의.
-     */
-    updateEvent() { }
-    #updateEvent() {
-        this.#removeEvent();
-        this.#initAction();
-        this.#addEvent();
-    }
-    /** `Common`객체의 `action`에 정의한 이벤트를 `addEventListener`에 적용할 시 실행할 `callback`. */
-    addEvent() { }
-    #addEvent() {
-        for (const action in this.#action) {
-            this.#action[action]
-                .forEach((...arg) => {
-                if (_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(arg[0].event)) {
-                    return;
-                }
-                if (Array.isArray(arg[0].event)) {
-                    arg[0].event
-                        .forEach((..._arg) => window.addEventListener(_arg[0], arg[0].listener, arg[0].option));
-                }
-                else {
-                    window.addEventListener(arg[0].event, arg[0].listener, arg[0].option);
-                }
-            });
-        }
-        this.#windowAction.forEach((...arg) => {
-            if (_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(arg[0].event)) {
-                return;
+            if (!regex[target.dataset['euType'] ?? 'A'].test(ev.data) &&
+                !_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(target.selectionStart)) {
+                target.selectionStart -= 1;
             }
-            if (Array.isArray(arg[0].event)) {
-                arg[0].event
-                    .forEach((..._arg) => window.addEventListener(_arg[0], arg[0].listener, arg[0].option));
+        }
+        UtilAction.#onNumberOnly(ev, target, common);
+    }
+    static #onNumberOnlyBlur(ev, target, common) { UtilAction.#onNumberOnly(ev, target, common); }
+    static #onNumberOnly(ev, target, common) {
+        const type = target.dataset['euType'] ?? 'A', min = target.dataset['euMin'], max = target.dataset['euMax'], regex = {
+            A: /[^\d]/g,
+            B: /[^\d\.\-]/g,
+            C: /[^\d]/g
+        };
+        let selection = target.selectionStart, decimal;
+        if (type == 'C') {
+            const value = target.value.split('.');
+            selection -= [...target.value.matchAll(/,/g)].length;
+            target.value = value[0];
+            decimal = value.filter((...arg) => arg[1] > 0)
+                .join('')
+                .substring(0, parseInt(target.dataset['euDecimal'] ?? '0'));
+            decimal = `${!_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(decimal) ? '.' : ''}${decimal}`;
+        }
+        target.value = target.value.replace(regex[type], '');
+        if (type == 'C') {
+            if (!_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(target.value) ||
+                !_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(decimal)) {
+                const num = parseInt(target.value || '0');
+                target.value = `${_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.numberFormat(num)}${decimal}`;
+                selection += [...target.value.matchAll(/,/g)].length;
+            }
+        }
+        if (_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.isNumber(min) ||
+            _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.isNumber(max)) {
+            let flag = false, value, num;
+            if (type == 'C') {
+                value = Number(target.value.replace(/,/g, ''));
             }
             else {
-                window.addEventListener(arg[0].event, arg[0].listener, arg[0].option);
+                value = Number(target.value);
             }
-        });
-        this.addEvent();
-    }
-    /** `Common`객체의 `action`에 정의한 이벤트를 `removeEventListener`에 적용할 시 실행할 `callback`. */
-    removeEvent() { }
-    #removeEvent() {
-        for (const action in this.#action) {
-            this.#action[action]
-                .forEach((...arg) => {
-                if (_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(arg[0].event)) {
-                    return;
+            if (!flag &&
+                _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.isNumber(min)) {
+                if (_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(target.value) ||
+                    value < Number(min)) {
+                    num = Number(min);
+                    flag = true;
                 }
-                if (Array.isArray(arg[0].event)) {
-                    arg[0].event
-                        .forEach((..._arg) => window.removeEventListener(_arg[0], arg[0].listener, arg[0].option));
+            }
+            if (!flag &&
+                _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.isNumber(max) &&
+                value > Number(max)) {
+                num = Number(max);
+                flag = true;
+            }
+            if (flag) {
+                let _value;
+                if (type == 'C') {
+                    _value = _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.numberFormat(num, parseInt(target.dataset['euDecimal'] ?? '0'));
                 }
                 else {
-                    window.removeEventListener(arg[0].event, arg[0].listener, arg[0].option);
+                    _value = `${num}`;
                 }
-            });
+                selection -= target.value.length - _value.length;
+                target.value = _value;
+            }
         }
-        this.#windowAction.forEach((...arg) => {
-            if (_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(arg[0].event)) {
-                return;
-            }
-            if (Array.isArray(arg[0].event)) {
-                arg[0].event
-                    .forEach((..._arg) => window.removeEventListener(_arg[0], arg[0].listener, arg[0].option));
-            }
-            else {
-                window.removeEventListener(arg[0].event, arg[0].listener, arg[0].option);
-            }
-        });
-        this.removeEvent();
-    }
-    static #actionHandle(common, interceptor, callback, action, flag) {
-        return async (ev) => {
-            let target = ev.target;
-            if (!_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(action)) {
-                if (!(ev.target instanceof HTMLElement)) {
-                    return;
-                }
-                target = ev.target.closest(`[data-eu-action~="${action}"]`);
-                if (_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(target)) {
-                    return;
-                }
-                if ((flag ?? false) &&
-                    !(target.getAttribute('data-eu-event') ?? '')
-                        .split(' ')
-                        .includes(ev.type)) {
-                    return;
-                }
-            }
-            const preHandle = interceptor.filter((...arg) => _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(arg[0].action) ||
-                arg[0].action.includes(action))
-                .map((...arg) => arg[0].preHandle), postHandle = interceptor.filter((...arg) => _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(arg[0].action) ||
-                arg[0].action.includes(action)).map((...arg) => arg[0].postHandle);
-            for (const handle of preHandle) {
-                if (!(handle?.(ev, target, common) ?? true)) {
-                    return;
-                }
-            }
-            await callback(ev, target, common);
-            postHandle.forEach((...arg) => arg[0]?.(ev, target, common));
-        };
-    }
-}
-
-
-/***/ }),
-
-/***/ "./dist/interceptor.js":
-/*!*****************************!*\
-  !*** ./dist/interceptor.js ***!
-  \*****************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ Interceptor)
-/* harmony export */ });
-/* harmony import */ var _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @nuka9510/js-util */ "./node_modules/@nuka9510/js-util/dist/esm/index.min.mjs");
-
-class Interceptor {
-    /** `Common`에 사용할 `interceptor` 배열 객체 */
-    static #interceptor = [];
-    /** `Common`에 사용할 `interceptor` 배열 객체 */
-    static get interceptor() { return _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.copy(Interceptor.#interceptor); }
-    /** `Common`에 사용할 `interceptor`을 추가 한다.  */
-    static append(interceptor) {
-        if (Array.isArray(interceptor)) {
-            Interceptor.#interceptor.push(...interceptor);
-        }
-        else {
-            Interceptor.#interceptor.push(interceptor);
+        if (!_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(target.selectionEnd)) {
+            target.selectionEnd = selection;
         }
     }
-}
-
-
-/***/ }),
-
-/***/ "./dist/plugin.js":
-/*!************************!*\
-  !*** ./dist/plugin.js ***!
-  \************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ Plugin)
-/* harmony export */ });
-/* harmony import */ var _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @nuka9510/js-util */ "./node_modules/@nuka9510/js-util/dist/esm/index.min.mjs");
-
-class Plugin {
-    /** `Common`에 사용할 `plugin` 배열 객체 */
-    static #plugin = [];
-    /** `Common`에 사용할 `plugin` 배열 객체 */
-    static get plugin() { return _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.copy(Plugin.#plugin); }
-    /** `Common`에 사용할 `plugin`을 추가 한다.  */
-    static append(plugin) {
-        if (Array.isArray(plugin)) {
-            Plugin.#plugin.push(...plugin);
-        }
-        else {
-            Plugin.#plugin.push(plugin);
+    static async #onClipboard(ev, target, common) {
+        await navigator.clipboard
+            .writeText(target.dataset['euValue'])
+            .then((value) => { alert('링크가 클립보드에 저장되었습니다.'); })
+            .catch((e) => { console.error(e); });
+    }
+    static #onCheck(ev, target, common) {
+        const targetEl = document.querySelector(`input[data-eu-name="${target.dataset['euTarget']}"]`);
+        targetEl.value = target.checked ? targetEl.dataset['euTrue'] : targetEl.dataset['euFalse'];
+    }
+    static async #onChildClose(ev, target, common) {
+        const onChildClose = Object.getOwnPropertyDescriptor(common, 'onChildClose');
+        await onChildClose.value(ev, target, common);
+        if (ev.detail.reload ?? true) {
+            location.reload();
         }
     }
+    /** `ChildCloseEvent`객체를 반환 한다. */
+    static childCloseEvent(opt) { return new CustomEvent('child-close', opt); }
 }
 
 
@@ -390,26 +315,20 @@ var r=function(){return r=Object.assign||function(r){for(var e,t=1,a=arguments.l
 var __webpack_exports__ = {};
 // This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
 (() => {
-/*!***********************!*\
-  !*** ./dist/index.js ***!
-  \***********************/
+/*!******************************!*\
+  !*** ./dist/plugin/index.js ***!
+  \******************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Common: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_0__["default"]),
-/* harmony export */   Interceptor: () => (/* reexport safe */ _interceptor_js__WEBPACK_IMPORTED_MODULE_2__["default"]),
-/* harmony export */   Plugin: () => (/* reexport safe */ _plugin_js__WEBPACK_IMPORTED_MODULE_1__["default"])
+/* harmony export */   UtilAction: () => (/* reexport safe */ _util_action_js__WEBPACK_IMPORTED_MODULE_0__["default"])
 /* harmony export */ });
-/* harmony import */ var _common_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./common.js */ "./dist/common.js");
-/* harmony import */ var _plugin_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./plugin.js */ "./dist/plugin.js");
-/* harmony import */ var _interceptor_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./interceptor.js */ "./dist/interceptor.js");
-
-
+/* harmony import */ var _util_action_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./util_action.js */ "./dist/plugin/util_action.js");
 
 
 
 })();
 
-module.exports = __webpack_exports__;
+elUtilPlugin = __webpack_exports__;
 /******/ })()
 ;
-//# sourceMappingURL=index.cjs.map
+//# sourceMappingURL=index.js.map

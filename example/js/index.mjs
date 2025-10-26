@@ -1,4 +1,5 @@
-import { Common, Interceptor } from "@nuka9510/el-util";
+import { Common, Interceptor, Plugin } from "@nuka9510/el-util";
+import { UtilAction } from "@nuka9510/el-util/plugin";
 
 class Index extends Common {
   get action() {
@@ -12,9 +13,12 @@ class Index extends Common {
   constructor() {
     super();
 
-    Interceptor.appendInterceptor({
-      preHandle: (ev, target) => {
-        console.debug(ev, target);
+    Plugin.append(UtilAction.plugin(this));
+
+    Interceptor.append({
+      preHandle: (ev, target, common) => {
+        console.debug(ev, target, common);
+
         alert('preHandle');
       }
     });
@@ -22,7 +26,7 @@ class Index extends Common {
     this.init();
   }
 
-  onTestClick(ev, target) { console.debug(ev, target); }
+  onTestClick(ev, target, common) { console.debug(ev, target, common); }
 
 }
 
