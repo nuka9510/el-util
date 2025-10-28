@@ -1,4 +1,4 @@
-import { plugin } from "../@types/plugin";
+import { plugin } from "@nuka9510/el-util/@types/plugin";
 import { Util } from "@nuka9510/js-util";
 
 export default class Plugin {

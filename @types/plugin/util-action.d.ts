@@ -1,5 +1,5 @@
-import { Common } from "../../src/index.js";
-import { actionItem } from "../common";
+import { actionItem } from "@nuka9510/el-util/@types/common";
+import { Common } from "@nuka9510/el-util";
 
 export interface NumberOnlyElement extends HTMLInputElement {
   event_key_code?: KeyboardEvent['keyCode'];

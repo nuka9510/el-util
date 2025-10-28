@@ -1,7 +1,7 @@
-import { ChildCloseEvent, ChildCloseEventOption, EUPropertyDescriptor, NumberOnlyElement, childWindow, plugin } from "../../@types/plugin/util_action";
+import { ChildCloseEvent, ChildCloseEventOption, EUPropertyDescriptor, NumberOnlyElement, childWindow, plugin } from "@nuka9510/el-util/@types/plugin/util-action";
+import { actionItem } from "@nuka9510/el-util/@types/common";
 import { Util } from "@nuka9510/js-util";
-import { Common } from "../index.js";
-import { actionItem } from "../../@types/common";
+import { Common } from "@nuka9510/el-util";
 
 export default class UtilAction {
   static plugin(

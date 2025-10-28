@@ -1,4 +1,4 @@
-import { interceptor } from "../@types/interceptor";
+import { interceptor } from "@nuka9510/el-util/@types/interceptor";
 import { Util } from "@nuka9510/js-util";
 
 export default class Interceptor {

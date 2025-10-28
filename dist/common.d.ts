@@ -1,4 +1,4 @@
-import { action, actionItem, allAction } from "../@types/common";
+import { action, actionItem, allAction } from "@nuka9510/el-util/@types/common";
 export default class Common {
     #private;
     /** `init` 실행 여부 */

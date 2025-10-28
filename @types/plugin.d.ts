@@ -1,5 +1,5 @@
+import { Common } from "@nuka9510/el-util";
 import { action, actionItem } from "./common";
-import Common from "../src/common.js";
 
 export interface plugin {
   common?: Common[];

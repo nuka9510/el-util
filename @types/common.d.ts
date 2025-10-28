@@ -1,4 +1,4 @@
-import { Common } from "../src/index.js";
+import { Common } from "@nuka9510/el-util";
 
 export interface actionItem {
   /**

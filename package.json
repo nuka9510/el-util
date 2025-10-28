@@ -23,14 +23,13 @@
     "./@types/plugin": {
       "types": "./@types/plugin.d.ts"
     },
-    "./@types/plugin/util_action": {
-      "types": "./@types/plugin/util_action.d.ts"
+    "./@types/plugin/util-action": {
+      "types": "./@types/plugin/util-action.d.ts"
     }
   },
   "files": [
     "@types",
-    "dist",
-    "src"
+    "dist"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -66,6 +65,6 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
-    "@nuka9510/js-util": "^1.2.5"
+    "@nuka9510/js-util": "^1.2.6"
   }
 }

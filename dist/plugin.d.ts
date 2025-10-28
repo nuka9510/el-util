@@ -1,4 +1,4 @@
-import { plugin } from "../@types/plugin";
+import { plugin } from "@nuka9510/el-util/@types/plugin";
 export default class Plugin {
     #private;
     /** `Common`에 사용할 `plugin` 배열 객체 */

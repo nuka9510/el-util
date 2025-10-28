@@ -1,5 +1,5 @@
-import { ChildCloseEvent, ChildCloseEventOption, plugin } from "../../@types/plugin/util_action";
-import { Common } from "../index.js";
+import { ChildCloseEvent, ChildCloseEventOption, plugin } from "@nuka9510/el-util/@types/plugin/util-action";
+import { Common } from "@nuka9510/el-util";
 export default class UtilAction {
     #private;
     static plugin(common: Common | Common[]): plugin;

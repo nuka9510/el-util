@@ -1,6 +1,6 @@
-import { action, actionItem, allAction } from "../@types/common";
-import { plugin } from "../@types/plugin";
-import { interceptor } from "../@types/interceptor";
+import { action, actionItem, allAction } from "@nuka9510/el-util/@types/common";
+import { plugin } from "@nuka9510/el-util/@types/plugin";
+import { interceptor } from "@nuka9510/el-util/@types/interceptor";
 import { Util } from "@nuka9510/js-util";
 import Plugin from "./plugin.js";
 import Interceptor from "./interceptor.js";
