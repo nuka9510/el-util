@@ -56,7 +56,7 @@
   "bugs": {
     "url": "https://github.com/nuka9510/el-util/issues"
   },
-  "homepage": "https://github.com/nuka9510/el-util",
+  "homepage": "https://github.com/nuka9510/el-util/wiki",
   "devDependencies": {
     "@types/node": "^22.14.0",
     "@types/webpack": "^5.28.5",

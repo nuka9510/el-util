@@ -7,9 +7,9 @@ export interface actionItem {
    */
   event?: string | string[];
   /** `EventListener`에 적용할 `callback` */
-  callback: <T, U> (
+  callback: <T extends Event, U extends HTMLElement> (
     ev: T,
-    target: U,
+    target: U | EventTarget,
     common: Common
   ) => void | Promise<void>;
   /** `EventListener`에 적용할 `option` */

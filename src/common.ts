@@ -153,7 +153,10 @@ export default class Common {
   init(): void {}
 
   #initAction(): void {
-    const interceptor: interceptor[] = Interceptor.interceptor,
+    const interceptor: interceptor[] = Interceptor.interceptor.filter(
+      (...arg) => Util.empty(arg[0].common) ||
+                  arg[0].common.includes(this)
+    ),
     allAction = this.allAction;
 
     this.#action = allAction.action;

@@ -137,7 +137,8 @@ class Common {
     /** `Common`객체 초기화. */
     init() { }
     #initAction() {
-        const interceptor = _interceptor_js__WEBPACK_IMPORTED_MODULE_2__["default"].interceptor, allAction = this.allAction;
+        const interceptor = _interceptor_js__WEBPACK_IMPORTED_MODULE_2__["default"].interceptor.filter((...arg) => _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(arg[0].common) ||
+            arg[0].common.includes(this)), allAction = this.allAction;
         this.#action = allAction.action;
         this.#windowAction = allAction.windowAction;
         for (const action in this.#action) {

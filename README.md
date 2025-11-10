@@ -33,22 +33,27 @@
 [top-language]: https://img.shields.io/github/languages/top/nuka9510/el-util
 
 ## Install
-```
+
+```shell
 npm i @nuka9510/el-util
 ```
-```
+
+```html
 <script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/js/index.min.js"> </script>
 <script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/js/plugin/index.min.js"> </script>
 ```
-```
+
+```html
 <script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util@latest/dist/js/index.min.js"> </script>
 <script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util@latest/dist/js/plugin/index.min.js"> </script>
 ```
-```
+
+```html
 <script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util@<specific-version>/dist/js/index.min.js"> </script>
 <script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util@<specific-version>/dist/js/plugin/index.min.js"> </script>
 ```
-```
+
+```html
 <script type="importmap">
   {
     "imports": {
@@ -58,7 +63,8 @@ npm i @nuka9510/el-util
   }
 </script>
 ```
-```
+
+```html
 <script type="importmap">
   {
     "imports": {
@@ -68,7 +74,8 @@ npm i @nuka9510/el-util
   }
 </script>
 ```
-```
+
+```html
 <script type="importmap">
   {
     "imports": {
@@ -78,152 +85,29 @@ npm i @nuka9510/el-util
   }
 </script>
 ```
+
 ## Usage
+
 ### js
+
+```js
+elUtil.Common;
+elUtilPlugin.UtilAction;
 ```
-class Index extends elUtil.Common {
-  get action() {
-    return {
-      'test-click': [
-        { event: 'click', callback: this.onTestClick }
-      ]
-    };
-  }
 
-  constructor() {
-    super();
-    
-    this.init();
-  }
-
-  onTestClick(ev, target, common) { console.debug(ev, target, common); }
-
-}
-
-new Index();
-```
 ### mjs
-```
+
+```js
 import { Common } from "@nuka9510/el-util";
-
-class Index extends Common {
-  get action() {
-    return {
-      'test-click': [
-        { event: 'click', callback: this.onTestClick }
-      ]
-    };
-  }
-
-  constructor() {
-    super();
-    
-    this.init();
-  }
-
-  onTestClick(ev, target, common) { console.debug(ev, target, common); }
-
-}
-
-new Index();
-```
-### cjs
-```
-const elUtil = require('@nuka9510/el-util');
-
-class Index extends elUtil.Common {
-  get action() {
-    return {
-      'test-click': [
-        { event: 'click', callback: this.onTestClick }
-      ]
-    };
-  }
-
-  constructor() {
-    super();
-    
-    this.init();
-  }
-
-  onTestClick(ev, target, common) { console.debug(ev, target, common); }
-
-}
-
-new Index();
-```
-### example
-```
-example
-├── js
-│  └── index.mjs
-└── view
-   └── index.html
-```
-- `js/index.mjs`
-```
-import { Common, Interceptor, Plugin } from "@nuka9510/el-util";
 import { UtilAction } from "@nuka9510/el-util/plugin";
-
-class Index extends Common {
-  get action() {
-    return {
-      'test-click': [
-        { event: 'click', callback: this.onTestClick }
-      ]
-    };
-  }
-
-  constructor() {
-    super();
-
-    Plugin.append(UtilAction.plugin(this));
-
-    Interceptor.append({
-      preHandle: (ev, target, common) => {
-        console.debug(ev, target, common);
-
-        alert('preHandle');
-      }
-    });
-    
-    this.init();
-  }
-
-  onTestClick(ev, target, common) { console.debug(ev, target, common); }
-
-}
-
-new Index();
 ```
-- `view/index.html`
-```
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  <button type="button" data-eu-action="test-click"> test-click </button>
-  <button type="button" data-eu-action="test-click">
-    <span> test-click </span>
-  </button>
-  <div style="display: flex;">
-    <input type="checkbox" data-eu-action="check-all" data-eu-target="test">
-    <input type="checkbox" data-eu-name="test">
-    <input type="checkbox" data-eu-name="test">
-  </div>
-</body>
-<script type="importmap">
-  {
-    "imports": {
-      "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/esm/index.min.mjs",
-      "@nuka9510/el-util/plugin": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/esm/plugin/index.min.mjs"
-    }
-  }
-</script>
-<script src="../js/index.mjs" type="module"></script>
-</html>
+
+### cjs
+
+```js
+const elUtil = require('@nuka9510/el-util'),
+elUtilPlugin = require('@nuka9510/el-util/plugin');
+
+elUtil.Common;
+elUtilPlugin.UtilAction;
 ```

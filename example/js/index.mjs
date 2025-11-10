@@ -22,7 +22,7 @@ class Index extends Common {
         alert('preHandle');
       }
     });
-    
+
     this.init();
   }
 
