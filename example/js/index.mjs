@@ -16,6 +16,7 @@ class Index extends Common {
     Plugin.append(UtilAction.plugin(this));
 
     Interceptor.append({
+      action: 'test-click',
       preHandle: (ev, target, common) => {
         console.debug(ev, target, common);
 

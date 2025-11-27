@@ -175,7 +175,7 @@ export default class UtilAction {
       const regex = {
         A: /[\d]/,
         B: /[\d\.\-]/,
-        C: /[\d\.]/
+        C: /[\d\.\-]/
       };
 
       if (
@@ -198,91 +198,108 @@ export default class UtilAction {
     target: NumberOnlyElement,
     common: Common
   ): void {
-    const type = target.dataset['euType'] ?? 'A',
-    min = target.dataset['euMin'],
-    max = target.dataset['euMax'],
-    regex = {
-      A: /[^\d]/g,
-      B: /[^\d\.\-]/g,
-      C: /[^\d]/g
-    };
+    const type = target.getAttribute('data-eu-type') ?? 'A',
+    min = target.getAttribute('data-eu-min'),
+    max = target.getAttribute('data-eu-max'),
+    decimal = parseInt(target.getAttribute('data-eu-decimal') ?? '0');
 
-    let selection = target.selectionStart,
-    decimal: string | undefined;
+    let value = target.value,
+    selection = target.selectionStart,
+    valueArr: string[];
 
-    if (type == 'C') {
-      const value = target.value.split('.');
+    switch (type) {
+      case 'A': value = value.replace(/[^\d]/g, ''); break;
+      case 'B':
+        value = value.replace(/[^\d\.\-]/g, '')
+                      .replace(/(?<!^)-/g, '')
+                      .replace(/\.(?!\d*$)/g, '');
+        break;
+      case 'C':
+        selection -= [...value?.matchAll(/,/g)]?.length ?? 0;
 
-      selection -= [...target.value.matchAll(/,/g)].length;
-
-      target.value = value[0];
-
-      decimal = value.filter((...arg) => arg[1] > 0)
-                      .join('')
-                      .substring(0, parseInt(target.dataset['euDecimal'] ?? '0'));
-      decimal = `${ !Util.empty(decimal) ? '.' : '' }${ decimal }`;
+        value = value.replace(/[^\d\.\-,]/g, '')
+                      .replace(/,/g, '')
+                      .replace(/(?<!^)-/g, '')
+                      .replace(/\.(?!\d*$)/g, '');
+        break;
     }
 
-    target.value = target.value.replace(regex[type], '');
+    valueArr = value.split('.');
 
-    if (type == 'C') {
-      if (
-        !Util.empty(target.value) ||
-        !Util.empty(decimal)
-      ) {
-        const num = parseInt(target.value || '0');
+    if (valueArr.length == 2) {
+      valueArr[1] = valueArr[1].substring(0, decimal);
 
-        target.value = `${ Util.numberFormat(num) }${ decimal }`;
-
-        selection += [...target.value.matchAll(/,/g)].length;
-      }
+      if (Util.empty(valueArr[0])) { valueArr[0] = '0'; }
     }
+
+    switch (type) {
+      case 'C':
+        if (Util.isNumber(valueArr[0])) {
+          valueArr[0] = Util.numberFormat(parseInt(valueArr[0]));
+
+          selection += [...valueArr[0]?.matchAll(/,/g)]?.length ?? 0;
+        }
+        break;
+    }
+
+    value = valueArr.join('.');
 
     if (
       Util.isNumber(min) ||
       Util.isNumber(max)
     ) {
       let flag = false,
-      value: number,
-      num: number;
+      temp: number;
 
-      if (type == 'C') {
-        value = Number(target.value.replace(/,/g, ''));
-      } else { value = Number(target.value); }
+      switch (type) {
+        case 'C': temp = Number(value.replace(/,/g, '')); break;
+        default: temp = Number(value); break;
+      }
 
       if (
         !flag &&
         Util.isNumber(min)
       ) {
         if (
-          Util.empty(target.value) ||
-          value < Number(min)
+          Util.empty(value) ||
+          temp < Number(min)
         ) {
-          num = Number(min);
+          temp = Number(min);
           flag = true;
         }
       }
 
       if (
         !flag &&
-        Util.isNumber(max) &&
-        value > Number(max)
+        Util.isNumber(max)
       ) {
-        num = Number(max);
-        flag = true;
+        if (temp > Number(max)) {
+          temp = Number(max);
+          flag = true;
+        }
       }
 
       if (flag) {
         let _value: string;
 
-        if (type == 'C') {
-          _value = Util.numberFormat(num, parseInt(target.dataset['euDecimal'] ?? '0'));
-        } else { _value = `${ num }`; }
+        switch (type) {
+          case 'C': _value = Util.numberFormat(temp, decimal); break;
+          default: _value = `${ temp }`; break;
+        }
 
-        selection -= target.value.length - _value.length;
-        target.value = _value;
+        selection -= value.length - _value.length;
+        value = _value;
       }
     }
+
+    switch (type) {
+      case 'B':
+      case 'C':
+        if (target.value.length > value.length) { selection -= target.value.length - value.length; }
+        break;
+    }
+
+    target.value = value;
 
     if (!Util.empty(target.selectionEnd)) { target.selectionEnd = selection; }
   }

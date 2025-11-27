@@ -141,7 +141,7 @@ class UtilAction {
             const regex = {
                 A: /[\d]/,
                 B: /[\d\.\-]/,
-                C: /[\d\.]/
+                C: /[\d\.\-]/
             };
             if (!regex[target.dataset['euType'] ?? 'A'].test(ev.data) &&
                 !_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(target.selectionStart)) {
@@ -152,65 +152,90 @@ class UtilAction {
     }
     static #onNumberOnlyBlur(ev, target, common) { UtilAction.#onNumberOnly(ev, target, common); }
     static #onNumberOnly(ev, target, common) {
-        const type = target.dataset['euType'] ?? 'A', min = target.dataset['euMin'], max = target.dataset['euMax'], regex = {
-            A: /[^\d]/g,
-            B: /[^\d\.\-]/g,
-            C: /[^\d]/g
-        };
-        let selection = target.selectionStart, decimal;
-        if (type == 'C') {
-            const value = target.value.split('.');
-            selection -= [...target.value.matchAll(/,/g)].length;
-            target.value = value[0];
-            decimal = value.filter((...arg) => arg[1] > 0)
-                .join('')
-                .substring(0, parseInt(target.dataset['euDecimal'] ?? '0'));
-            decimal = `${!_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(decimal) ? '.' : ''}${decimal}`;
+        const type = target.getAttribute('data-eu-type') ?? 'A', min = target.getAttribute('data-eu-min'), max = target.getAttribute('data-eu-max'), decimal = parseInt(target.getAttribute('data-eu-decimal') ?? '0');
+        let value = target.value, selection = target.selectionStart, valueArr;
+        switch (type) {
+            case 'A':
+                value = value.replace(/[^\d]/g, '');
+                break;
+            case 'B':
+                value = value.replace(/[^\d\.\-]/g, '')
+                    .replace(/(?<!^)-/g, '')
+                    .replace(/\.(?!\d*$)/g, '');
+                break;
+            case 'C':
+                selection -= [...value?.matchAll(/,/g)]?.length ?? 0;
+                value = value.replace(/[^\d\.\-,]/g, '')
+                    .replace(/,/g, '')
+                    .replace(/(?<!^)-/g, '')
+                    .replace(/\.(?!\d*$)/g, '');
+                break;
         }
-        target.value = target.value.replace(regex[type], '');
-        if (type == 'C') {
-            if (!_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(target.value) ||
-                !_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(decimal)) {
-                const num = parseInt(target.value || '0');
-                target.value = `${_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.numberFormat(num)}${decimal}`;
-                selection += [...target.value.matchAll(/,/g)].length;
+        valueArr = value.split('.');
+        if (valueArr.length == 2) {
+            valueArr[1] = valueArr[1].substring(0, decimal);
+            if (_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(valueArr[0])) {
+                valueArr[0] = '0';
             }
         }
+        switch (type) {
+            case 'C':
+                if (_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.isNumber(valueArr[0])) {
+                    valueArr[0] = _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.numberFormat(parseInt(valueArr[0]));
+                    selection += [...valueArr[0]?.matchAll(/,/g)]?.length ?? 0;
+                }
+                break;
+        }
+        value = valueArr.join('.');
         if (_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.isNumber(min) ||
             _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.isNumber(max)) {
-            let flag = false, value, num;
-            if (type == 'C') {
-                value = Number(target.value.replace(/,/g, ''));
-            }
-            else {
-                value = Number(target.value);
+            let flag = false, temp;
+            switch (type) {
+                case 'C':
+                    temp = Number(value.replace(/,/g, ''));
+                    break;
+                default:
+                    temp = Number(value);
+                    break;
             }
             if (!flag &&
                 _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.isNumber(min)) {
-                if (_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(target.value) ||
-                    value < Number(min)) {
-                    num = Number(min);
+                if (_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(value) ||
+                    temp < Number(min)) {
+                    temp = Number(min);
                     flag = true;
                 }
             }
             if (!flag &&
-                _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.isNumber(max) &&
-                value > Number(max)) {
-                num = Number(max);
-                flag = true;
+                _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.isNumber(max)) {
+                if (temp > Number(max)) {
+                    temp = Number(max);
+                    flag = true;
+                }
             }
             if (flag) {
                 let _value;
-                if (type == 'C') {
-                    _value = _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.numberFormat(num, parseInt(target.dataset['euDecimal'] ?? '0'));
+                switch (type) {
+                    case 'C':
+                        _value = _nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.numberFormat(temp, decimal);
+                        break;
+                    default:
+                        _value = `${temp}`;
+                        break;
                 }
-                else {
-                    _value = `${num}`;
-                }
-                selection -= target.value.length - _value.length;
-                target.value = _value;
+                selection -= value.length - _value.length;
+                value = _value;
             }
         }
+        switch (type) {
+            case 'B':
+            case 'C':
+                if (target.value.length > value.length) {
+                    selection -= target.value.length - value.length;
+                }
+                break;
+        }
+        target.value = value;
         if (!_nuka9510_js_util__WEBPACK_IMPORTED_MODULE_0__.Util.empty(target.selectionEnd)) {
             target.selectionEnd = selection;
         }
