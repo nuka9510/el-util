@@ -40,25 +40,21 @@ npm i @nuka9510/el-util
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/js/index.min.js"> </script>
-<script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/js/plugin/index.min.js"> </script>
 ```
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util@latest/dist/js/index.min.js"> </script>
-<script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util@latest/dist/js/plugin/index.min.js"> </script>
 ```
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util@<specific-version>/dist/js/index.min.js"> </script>
-<script src="https://cdn.jsdelivr.net/npm/@nuka9510/el-util@<specific-version>/dist/js/plugin/index.min.js"> </script>
 ```
 
 ```html
 <script type="importmap">
   {
     "imports": {
-      "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/esm/index.min.mjs",
-      "@nuka9510/el-util/plugin": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/esm/plugin/index.min.mjs"
+      "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util/dist/esm/index.min.mjs"
     }
   }
 </script>
@@ -68,8 +64,7 @@ npm i @nuka9510/el-util
 <script type="importmap">
   {
     "imports": {
-      "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util@latest/dist/esm/index.min.mjs",
-      "@nuka9510/el-util/plugin": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util@latest/dist/esm/plugin/index.min.mjs"
+      "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util@latest/dist/esm/index.min.mjs"
     }
   }
 </script>
@@ -79,8 +74,7 @@ npm i @nuka9510/el-util
 <script type="importmap">
   {
     "imports": {
-      "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util@<specific-version>/dist/esm/index.min.mjs",
-      "@nuka9510/el-util/plugin": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util@<specific-version>/dist/esm/plugin/index.min.mjs"
+      "@nuka9510/el-util": "https://cdn.jsdelivr.net/npm/@nuka9510/el-util@<specific-version>/dist/esm/index.min.mjs"
     }
   }
 </script>
@@ -92,22 +86,18 @@ npm i @nuka9510/el-util
 
 ```js
 elUtil.Common;
-elUtilPlugin.UtilAction;
 ```
 
 ### mjs
 
 ```js
 import { Common } from "@nuka9510/el-util";
-import { UtilAction } from "@nuka9510/el-util/plugin";
 ```
 
 ### cjs
 
 ```js
-const elUtil = require('@nuka9510/el-util'),
-elUtilPlugin = require('@nuka9510/el-util/plugin');
+const elUtil = require('@nuka9510/el-util');
 
 elUtil.Common;
-elUtilPlugin.UtilAction;
 ```

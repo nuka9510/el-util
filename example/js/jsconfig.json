@@ -11,11 +11,9 @@
     "paths": {
       "@nuka9510/js-util": [ "../../node_modules/@nuka9510/js-util/dist/index.d.ts" ],
       "@nuka9510/el-util": [ "../../dist/index.d.ts" ],
-      "@nuka9510/el-util/plugin": [ "../../dist/plugin/index.d.ts" ],
       "@nuka9510/el-util/@types/common": ["../../@types/common.d.ts"],
       "@nuka9510/el-util/@types/interceptor": ["../../@types/interceptor.d.ts"],
-      "@nuka9510/el-util/@types/plugin": ["../../@types/plugin.d.ts"],
-      "@nuka9510/el-util/@types/plugin/util-action": ["../../@types/plugin/util-action.d.ts"]
+      "@nuka9510/el-util/@types/plugin": ["../../@types/plugin.d.ts"]
     }
   }
 }

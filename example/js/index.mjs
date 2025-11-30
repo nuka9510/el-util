@@ -1,5 +1,4 @@
 import { Common, Interceptor, Plugin } from "@nuka9510/el-util";
-import { UtilAction } from "@nuka9510/el-util/plugin";
 
 class Index extends Common {
   get action() {
@@ -12,8 +11,6 @@ class Index extends Common {
 
   constructor() {
     super();
-
-    Plugin.append(UtilAction.plugin(this));
 
     Interceptor.append({
       action: 'test-click',
