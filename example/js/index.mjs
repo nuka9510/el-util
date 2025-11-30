@@ -1,4 +1,4 @@
-import { Common, Interceptor, Plugin } from "@nuka9510/el-util";
+import { Common, Interceptor } from "@nuka9510/el-util";
 
 class Index extends Common {
   get action() {
